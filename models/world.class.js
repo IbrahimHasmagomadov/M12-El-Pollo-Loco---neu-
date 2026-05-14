@@ -47,13 +47,23 @@ class World {
 
 
 
-  addToMap(object) {
-    this.ctx.drawImage(object.img, object.x, object.y, object.width, object.height);
+  addObjectsToMap(objects) {
+    objects.forEach(o => {
+      this.addToMap(o);
+    });
   }
 
-  addObjectsToMap(objects) {
-    objects.forEach(object => {
-      this.addToMap(object);
-    });
+  addToMap(mo) {
+    if (mo.otherDirection) {
+      this.ctx.save();
+      this.ctx.translate(mo.width, 0);
+      this.ctx.scale(-1, 1);
+      mo.x = mo.x * -1;
+    }
+    this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
+    if (mo.otherDirection) {
+      mo.x = mo.x * -1;
+      this.ctx.restore();
+    }
   }
 }
