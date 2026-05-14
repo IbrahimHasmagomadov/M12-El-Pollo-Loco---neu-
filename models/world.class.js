@@ -39,6 +39,8 @@ class World {
     });
   }
 
+
+
   addToMap(object) {
     this.ctx.drawImage(object.img, object.x, object.y, object.width, object.height);
   }
