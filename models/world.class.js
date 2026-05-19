@@ -50,9 +50,20 @@ class World {
       mo.x = mo.x * -1;
     }
     this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
+    this.drawDebugBox(mo);
     if (mo.otherDirection) {
       mo.x = mo.x * -1;
       this.ctx.restore();
+    }
+  }
+
+  drawDebugBox(mo) {
+    if (mo instanceof Character || mo instanceof Chicken || mo instanceof Endboss) {
+    this.ctx.save();
+    this.ctx.strokeStyle = 'red';
+    this.ctx.lineWidth = 2;
+    this.ctx.strokeRect(mo.x, mo.y, mo.width, mo.height);
+    this.ctx.restore();
     }
   }
 }
