@@ -15,7 +15,7 @@ class Endboss extends MovableObject {
     ]
 
     constructor(){
-        super().loadImage('img/4_enemie_boss_chicken/2_alert/G10.png');
+        super().loadImage('img/4_enemie_boss_chicken/2_alert/G11.png');
         this.loadImages(this.IMAGES_WALKING);
         this.x = 500;
         this.animate();
@@ -26,4 +26,5 @@ class Endboss extends MovableObject {
             this.playAnimation(this.IMAGES_WALKING);
         }, 260);
     }
+
 }
