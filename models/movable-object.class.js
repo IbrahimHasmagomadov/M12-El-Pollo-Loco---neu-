@@ -10,6 +10,7 @@ class MovableObject {
   otherDirection = false;
   speedY = 0;
   acceleration = 2;
+  energy = 100;
   
   applyGravity() {
     setInterval(() => {
@@ -30,6 +31,13 @@ class MovableObject {
     this.img.src = path;
     this.img.onload = () => {
     };
+  }
+
+  isColliding(mo) {
+    return this.x + this.width > mo.x &&
+           this.y + this.height > mo.y &&
+           this.x < mo.x &&
+           this.y < mo.y + mo.height;
   }
 
   /**
