@@ -13,6 +13,7 @@ class DrawableObject {
     this.img.onload = () => {};
   }
 
+
     /**
    *
    * @param {Array} arr 
