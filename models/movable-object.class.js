@@ -5,6 +5,7 @@ class MovableObject extends DrawableObject {
   acceleration = 2;
   energy = 100;
   lastHit = 0;
+  groundY = 170;
   offset = {
     top: 0,
     left: 0,
@@ -18,11 +19,12 @@ class MovableObject extends DrawableObject {
         this.y -= this.speedY;
         this.speedY -= this.acceleration;
       }
-    }, 1000 / 25);
+    }, 1000 / 30);
   }
 
+
   isAboveGround() {
-    return this.y < 170;
+    return this.y < this.groundY;
   }
 
   hit() {
@@ -44,12 +46,14 @@ class MovableObject extends DrawableObject {
     return this.energy == 0;
   }
 
-isColliding(mo) {
-  return this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
-         this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
-         this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
-         this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom;
-}
+  isColliding(mo) {
+    return (
+      this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
+      this.y + this.height - this.offset.bottom > mo.y + mo.offset.top &&
+      this.x + this.offset.left < mo.x + mo.width - mo.offset.right &&
+      this.y + this.offset.top < mo.y + mo.height - mo.offset.bottom
+    );
+  }
 
   playAnimation(images) {
     let i = this.currentImage % images.length;

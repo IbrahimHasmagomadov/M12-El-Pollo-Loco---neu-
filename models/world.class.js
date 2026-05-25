@@ -25,10 +25,13 @@ class World {
   checkCollisions() {
     setInterval(() => {
       this.level.enemies.forEach((enemy) => {
-        if (this.character.isColliding(enemy)) {
+        if (
+          this.character.isColliding(enemy) &&
+          !this.character.isHurt() &&
+          !this.character.isDead()
+        ) {
           this.character.hit();
           this.statusbar.setPercentage(this.character.energy);
-          console.log("Character energy:", this.character.energy);
         }
       });
     }, 100);
