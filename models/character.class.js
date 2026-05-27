@@ -55,6 +55,8 @@ class Character extends MovableObject {
     "img/2_character_pepe/2_walk/W-26.png",
   ];
 
+  IMAGES_THROW = ["img/2_character_pepe/throw/throw.png"];
+
   IMAGES_JUMPING = [
     "img/2_character_pepe/3_jump/J-31.png",
     "img/2_character_pepe/3_jump/J-32.png",
@@ -91,6 +93,7 @@ class Character extends MovableObject {
     this.loadImages(this.IMAGES_IDLE);
     this.loadImages(this.IMAGES_LONG_IDLE);
     this.loadImages(this.IMAGES_WALKING);
+    this.loadImages(this.IMAGES_THROW);
     this.loadImages(this.IMAGES_JUMPING);
     this.loadImages(this.IMAGES_DEAD);
     this.loadImages(this.IMAGES_HURT);
@@ -144,6 +147,8 @@ class Character extends MovableObject {
       } else if (this.isHurt()) {
         this.playAnimation(this.IMAGES_HURT);
         this.idleStartTime = new Date().getTime();
+      } else if (this.world.keyboard.D) {
+        this.playAnimation(this.IMAGES_THROW);
       } else if (this.isAboveGround()) {
         this.playJumpAnimation();
       } else if (
