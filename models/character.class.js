@@ -143,6 +143,7 @@ class Character extends MovableObject {
         this.playDeadAnimation();
       } else if (this.isHurt()) {
         this.playAnimation(this.IMAGES_HURT);
+        this.idleStartTime = new Date().getTime();
       } else if (this.isAboveGround()) {
         this.playJumpAnimation();
       } else if (
@@ -196,7 +197,11 @@ class Character extends MovableObject {
       this.animationFrame++;
     } else {
       this.deadAnimationPlayed = true;
+      this.width = 100;
+      this.height = 150;
+      this.y = 290;
       this.img = this.imageCache[this.IMAGE_RIP];
+      this.otherDirection = false;
     }
   }
 }
