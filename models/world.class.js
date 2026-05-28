@@ -39,17 +39,20 @@ class World {
   }
 
   checkThrowObjects() {
-  setInterval(() => {
-    if (this.keyboard.D) {
-      let bottle = new ThrowableObject();
+    setInterval(() => {
+      if (this.keyboard.D) {
+        let bottle = new ThrowableObject(
+          this.character.x + 100,
+          this.character.y + 100,
+        );
 
-      bottle.x = this.character.x + 100;
-      bottle.y = this.character.y + 100;
+        bottle.x = this.character.x + 100;
+        bottle.y = this.character.y + 100;
 
-      this.throwableObjects.push(bottle);
-    }
-  }, 200);
-}
+        this.throwableObjects.push(bottle);
+      }
+    }, 200);
+  }
 
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -62,7 +65,6 @@ class World {
     this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.statusbar);
 
-    // Draw() wird immer wieder aufgerufen
     let self = this;
     requestAnimationFrame(function () {
       self.draw();

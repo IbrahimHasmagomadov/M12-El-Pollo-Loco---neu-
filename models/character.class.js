@@ -2,7 +2,7 @@ class Character extends MovableObject {
   height = 250;
   width = 120;
   y = 175;
-  speed = 10;
+  speed = 6;
   groundY = 180;
 
   offset = {
@@ -17,6 +17,8 @@ class Character extends MovableObject {
   deadAnimationPlayed = false;
   landingAnimationUntil = 0;
   wasAboveGround = false;
+  isThrowing = false;
+  throwAnimationFrame = 0;
 
   IMAGE_RIP = "img/You won, you lost/RIP.png";
 
@@ -55,7 +57,10 @@ class Character extends MovableObject {
     "img/2_character_pepe/2_walk/W-26.png",
   ];
 
-  IMAGES_THROW = ["img/2_character_pepe/throw/throw.png"];
+  IMAGES_THROW = [
+    "img/2_character_pepe/6_throw/throw-1.png",
+    "img/2_character_pepe/6_throw/throw-2.png",
+  ];
 
   IMAGES_JUMPING = [
     "img/2_character_pepe/3_jump/J-31.png",
@@ -113,7 +118,7 @@ class Character extends MovableObject {
         return;
       }
 
-      if (this.world.keyboard.RIGHT) {
+      if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
         this.moveRight();
         this.otherDirection = false;
         this.idleStartTime = new Date().getTime();
@@ -133,6 +138,10 @@ class Character extends MovableObject {
         this.idleStartTime = new Date().getTime();
       }
 
+      if (this.world.keyboard.D && !this.isThrowing) {
+        this.throw();
+      }
+
       if (this.wasAboveGround && !this.isAboveGround()) {
         this.landingAnimationUntil = new Date().getTime() + 250;
       }
@@ -147,8 +156,8 @@ class Character extends MovableObject {
       } else if (this.isHurt()) {
         this.playAnimation(this.IMAGES_HURT);
         this.idleStartTime = new Date().getTime();
-      } else if (this.world.keyboard.D) {
-        this.playAnimation(this.IMAGES_THROW);
+      } else if (this.isThrowing) {
+        this.playThrowAnimation();
       } else if (this.isAboveGround()) {
         this.playJumpAnimation();
       } else if (
@@ -164,7 +173,7 @@ class Character extends MovableObject {
       } else {
         this.playAnimation(this.IMAGES_IDLE);
       }
-    }, 150);
+    }, 1000/10);
   }
 
   isLongIdle() {
@@ -189,6 +198,22 @@ class Character extends MovableObject {
   jump() {
     this.speedY = 25;
   }
+
+  throw() {
+    this.isThrowing = true;
+    this.throwAnimationFrame = 0;
+    this.idleStartTime = new Date().getTime();
+  }
+
+playThrowAnimation() {
+  if (this.throwAnimationFrame < this.IMAGES_THROW.length) {
+    let path = this.IMAGES_THROW[Math.floor(this.throwAnimationFrame)];
+    this.img = this.imageCache[path];
+    this.throwAnimationFrame += 1.8;
+  } else {
+    this.isThrowing = false;
+  }
+}
 
   playDeadAnimation() {
     if (this.deadAnimationPlayed) {
