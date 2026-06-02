@@ -110,21 +110,42 @@ class World {
     });
   }
 
-  addToMap(mo) {
-    if (mo.otherDirection) {
+   addToMap(mo) {
+    if (mo instanceof ThrowableObject) {
+      // Bottle rotation logic
       this.ctx.save();
-      this.ctx.translate(mo.width, 0);
-      this.ctx.scale(-1, 1);
-      mo.x = mo.x * -1;
-    }
-    this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
-    this.drawDebugBox(mo);
-    if (mo.otherDirection) {
-      mo.x = mo.x * -1;
+      
+      // Translate to center of bottle for rotation
+      this.ctx.translate(mo.x + mo.width / 2, mo.y + mo.height / 2);
+      
+      // Flip horizontally if throwing left
+      if (mo.otherDirection) {
+        this.ctx.scale(-1, 1);
+      }
+      
+      // Rotate bottle around its center
+      this.ctx.rotate((mo.rotation * Math.PI) / 100);
+      
+      // Draw from center
+      this.ctx.drawImage(mo.img, -mo.width / 2, -mo.height / 2, mo.width, mo.height);
+      
       this.ctx.restore();
+    } else {
+      // logic for all other objects (Character, Chicken, Endboss)
+      if (mo.otherDirection) {
+        this.ctx.save();
+        this.ctx.translate(mo.width, 0);
+        this.ctx.scale(-1, 1);
+        mo.x = mo.x * -1;
+      }
+      this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
+      this.drawDebugBox(mo);
+      if (mo.otherDirection) {
+        mo.x = mo.x * -1;
+        this.ctx.restore();
+      }
     }
   }
-
   drawDebugBox(mo) {
     if (
       mo instanceof Character ||
