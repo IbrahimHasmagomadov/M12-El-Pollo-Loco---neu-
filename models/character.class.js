@@ -11,6 +11,7 @@ class Character extends MovableObject {
     right: 20,
     bottom: 10,
   };
+  lastThrow = 0;
 
   idleStartTime = new Date().getTime();
   animationFrame = 0;
@@ -138,7 +139,7 @@ class Character extends MovableObject {
         this.idleStartTime = new Date().getTime();
       }
 
-      if (this.world.keyboard.D && !this.isThrowing) {
+      if (this.world.keyboard.D && !this.isThrowing && this.canThrow()) {
         this.throw();
       }
 
@@ -173,7 +174,7 @@ class Character extends MovableObject {
       } else {
         this.playAnimation(this.IMAGES_IDLE);
       }
-    }, 1000/10);
+    }, 1000 / 10);
   }
 
   isLongIdle() {
@@ -199,21 +200,27 @@ class Character extends MovableObject {
     this.speedY = 25;
   }
 
+  canThrow() {
+    let timePassed = new Date().getTime() - this.lastThrow;
+    return timePassed > 900;
+  }
+
   throw() {
     this.isThrowing = true;
     this.throwAnimationFrame = 0;
     this.idleStartTime = new Date().getTime();
+    this.lastThrow = new Date().getTime();
   }
 
-playThrowAnimation() {
-  if (this.throwAnimationFrame < this.IMAGES_THROW.length) {
-    let path = this.IMAGES_THROW[Math.floor(this.throwAnimationFrame)];
-    this.img = this.imageCache[path];
-    this.throwAnimationFrame += 1.8;
-  } else {
-    this.isThrowing = false;
+  playThrowAnimation() {
+    if (this.throwAnimationFrame < this.IMAGES_THROW.length) {
+      let path = this.IMAGES_THROW[Math.floor(this.throwAnimationFrame)];
+      this.img = this.imageCache[path];
+      this.throwAnimationFrame += 1.8;
+    } else {
+      this.isThrowing = false;
+    }
   }
-}
 
   playDeadAnimation() {
     if (this.deadAnimationPlayed) {

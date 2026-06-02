@@ -7,6 +7,7 @@ class World {
   camera_x = 0;
   statusbar = new Statusbar();
   throwableObjects = [];
+  canThrow = true;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -25,33 +26,65 @@ class World {
 
   checkCollisions() {
     setInterval(() => {
+      // Character vs Chicken
       this.level.enemies.forEach((enemy) => {
         if (
           this.character.isColliding(enemy) &&
           !this.character.isHurt() &&
-          !this.character.isDead()
+          !this.character.isDead() &&
+          !enemy.isDead
         ) {
           this.character.hit();
           this.statusbar.setPercentage(this.character.energy);
         }
       });
-    }, 100);
+
+      // Bottle vs Chicken
+      this.throwableObjects.forEach((bottle) => {
+        this.level.enemies.forEach((enemy) => {
+          if (
+            enemy instanceof Chicken &&
+            bottle.isColliding(enemy) &&
+            !enemy.isDead &&
+            !bottle.hasHit
+          ) {
+            enemy.kill();
+            bottle.bottleSplash();
+
+            setTimeout(() => {
+              let index = this.level.enemies.indexOf(enemy);
+              this.level.enemies.splice(index, 1);
+            }, 1000);
+          }
+        });
+      });
+
+      // Fertige Splash-Flaschen entfernen
+      this.throwableObjects = this.throwableObjects.filter((bottle) => {
+        return !bottle.splashFinished;
+      });
+    }, 50);
   }
 
   checkThrowObjects() {
     setInterval(() => {
-      if (this.keyboard.D) {
+      if (this.keyboard.D && this.canThrow && !this.character.isHurt()) {
         let bottle = new ThrowableObject(
-          this.character.x + 100,
+          this.character.otherDirection
+            ? this.character.x
+            : this.character.x + 100,
           this.character.y + 100,
+          this.character.otherDirection,
         );
 
-        bottle.x = this.character.x + 100;
-        bottle.y = this.character.y + 100;
-
         this.throwableObjects.push(bottle);
+
+        this.canThrow = false;
+        setTimeout(() => {
+          this.canThrow = true;
+        }, 900);
       }
-    }, 200);
+    }, 100);
   }
 
   draw() {
