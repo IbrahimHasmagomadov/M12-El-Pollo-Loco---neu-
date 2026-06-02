@@ -30,12 +30,16 @@ class World {
       this.level.enemies.forEach((enemy) => {
         if (
           this.character.isColliding(enemy) &&
-          !this.character.isHurt() &&
           !this.character.isDead() &&
           !enemy.isDead
         ) {
-          this.character.hit();
-          this.statusbar.setPercentage(this.character.energy);
+          if (this.character.speedY < 0) {
+            enemy.kill();
+            this.character.speedY = 15;
+          } else if (!this.character.isHurt()) {
+            this.character.hit();
+            this.statusbar.setPercentage(this.character.energy);
+          }
         }
       });
 
@@ -110,25 +114,31 @@ class World {
     });
   }
 
-   addToMap(mo) {
+  addToMap(mo) {
     if (mo instanceof ThrowableObject) {
       // Bottle rotation logic
       this.ctx.save();
-      
+
       // Translate to center of bottle for rotation
       this.ctx.translate(mo.x + mo.width / 2, mo.y + mo.height / 2);
-      
+
       // Flip horizontally if throwing left
       if (mo.otherDirection) {
         this.ctx.scale(-1, 1);
       }
-      
+
       // Rotate bottle around its center
       this.ctx.rotate((mo.rotation * Math.PI) / 100);
-      
+
       // Draw from center
-      this.ctx.drawImage(mo.img, -mo.width / 2, -mo.height / 2, mo.width, mo.height);
-      
+      this.ctx.drawImage(
+        mo.img,
+        -mo.width / 2,
+        -mo.height / 2,
+        mo.width,
+        mo.height,
+      );
+
       this.ctx.restore();
     } else {
       // logic for all other objects (Character, Chicken, Endboss)
