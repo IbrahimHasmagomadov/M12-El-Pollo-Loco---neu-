@@ -4,6 +4,7 @@ class ThrowableObject extends MovableObject {
   splashFrame = 0;
   hasHit = false;
   splashFinished = false;
+  groundY = 370;
 
   IMAGES_SPLASH = [
     "img/6_salsa_bottle/bottle_rotation/bottle_splash/1_bottle_splash.png",
@@ -45,7 +46,10 @@ class ThrowableObject extends MovableObject {
 
         this.y -= this.speedY;
         this.speedY -= this.acceleration;
-        this.rotation += 10;
+
+        if (this.y >= this.groundY) {
+          this.bottleSplash();
+        }
       }
     }, 25);
   }
