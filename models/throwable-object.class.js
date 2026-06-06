@@ -5,6 +5,7 @@ class ThrowableObject extends MovableObject {
   hasHit = false;
   splashFinished = false;
   groundY = 370;
+  throwInterval;
 
   IMAGES_SPLASH = [
     "img/6_salsa_bottle/bottle_rotation/bottle_splash/1_bottle_splash.png",
@@ -34,7 +35,11 @@ class ThrowableObject extends MovableObject {
   }
 
   throw() {
-    setInterval(() => {
+    this.throwInterval = setInterval(() => {
+      if (this.splashFinished) {
+        clearInterval(this.throwInterval);
+        return;
+      }
       if (this.isSplashing) {
         this.playSplashAnimation();
       } else {
@@ -44,7 +49,6 @@ class ThrowableObject extends MovableObject {
         } else {
           this.x += 10;
         }
-
         this.y -= this.speedY;
         this.speedY -= this.acceleration;
 
