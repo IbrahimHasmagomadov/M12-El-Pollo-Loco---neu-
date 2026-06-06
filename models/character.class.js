@@ -1,7 +1,7 @@
 class Character extends MovableObject {
   height = 250;
   width = 120;
-  y = 175;
+  y = 180;
   speed = 6;
   groundY = 180;
 
@@ -236,7 +236,9 @@ class Character extends MovableObject {
       this.deadAnimationPlayed = true;
       this.width = 100;
       this.height = 150;
-      this.y = 290;
+      this.groundY = 290;
+      this.y = this.groundY;
+      this.speedY = 0;
       this.img = this.imageCache[this.IMAGE_RIP];
       this.otherDirection = false;
     }

@@ -26,22 +26,52 @@ class World {
 
   checkCollisions() {
     setInterval(() => {
-      // Character vs Chicken
-      this.level.enemies.forEach((enemy) => {
+      // Character vs Enemies
+      for (const enemy of this.level.enemies) {
         if (
           this.character.isColliding(enemy) &&
           !this.character.isDead() &&
-          !enemy.isDead
+          !this.character.isHurt()
         ) {
-          if (this.character.speedY < 0) {
-            enemy.kill();
-            this.character.speedY = 15;
-          } else if (!this.character.isHurt()) {
+          // Chicken separat behandeln
+          if (enemy instanceof Chicken && !enemy.isDead) {
+            const characterBottom =
+              this.character.y +
+              this.character.height -
+              this.character.offset.bottom;
+
+            const enemyTop = enemy.y + enemy.offset.top;
+
+            const isJumpingOnEnemy =
+              this.character.speedY < 0 && characterBottom <= enemyTop + 45;
+
+            if (isJumpingOnEnemy) {
+              enemy.kill();
+              this.character.speedY = 15;
+
+              setTimeout(() => {
+                let index = this.level.enemies.indexOf(enemy);
+                this.level.enemies.splice(index, 1);
+              }, 1000);
+
+             break; //nach einem gekillten Chicken keine weiteren Gegner prüfen
+            } else {
+              this.character.hit();
+              this.statusbar.setPercentage(this.character.energy);
+
+              break;
+            }
+          }
+
+          // Endboss verletzt Pepe bei Berührung
+          if (enemy instanceof Endboss) {
             this.character.hit();
             this.statusbar.setPercentage(this.character.energy);
+
+            break;
           }
         }
-      });
+      }
 
       // Bottle vs Chicken
       this.throwableObjects.forEach((bottle) => {
