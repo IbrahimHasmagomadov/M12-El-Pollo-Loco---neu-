@@ -26,93 +26,125 @@ class World {
 
   checkCollisions() {
     setInterval(() => {
-      // Character vs Enemies
-      for (const enemy of this.level.enemies) {
-        if (
-          this.character.isColliding(enemy) &&
-          !this.character.isDead() &&
-          !this.character.isHurt()
-        ) {
-          // Chicken separat behandeln
-          if (enemy instanceof Chicken && !enemy.isDead) {
-            const characterBottom =
-              this.character.y +
-              this.character.height -
-              this.character.offset.bottom;
+      this.checkCharacterEnemyCollision();
+      this.checkBottleChickenCollision();
+      this.removeFinishedBottles();
+    }, 50);
+  }
 
-            const enemyTop = enemy.y + enemy.offset.top;
+  checkCharacterEnemyCollision() {
+    const collidingEnemies = this.getCollidingEnemies();
+    const stompedChicken = this.findStompedChicken(collidingEnemies);
+    if (stompedChicken) {
+      this.killChickenByJump(stompedChicken);
+      return;
+    }
+    const touchedEndboss = collidingEnemies.find((enemy) => {
+      return enemy instanceof Endboss;
+    });
+    if (touchedEndboss) {
+      this.hitCharacter();
+      return;
+    }
+    const touchedChicken = collidingEnemies.find((enemy) => {
+      return enemy instanceof Chicken && !enemy.isDead;
+    });
 
-            const isJumpingOnEnemy =
-              this.character.speedY < 0 && characterBottom <= enemyTop + 45;
+    if (touchedChicken) {
+      this.hitCharacter();
+    }
+  }
 
-            if (isJumpingOnEnemy) {
-              enemy.kill();
-              this.character.speedY = 15;
+  getCollidingEnemies() {
+    return this.level.enemies.filter((enemy) => {
+      return (
+        this.character.isColliding(enemy) &&
+        !this.character.isDead() &&
+        !this.character.isHurt()
+      );
+    });
+  }
 
-              setTimeout(() => {
-                let index = this.level.enemies.indexOf(enemy);
-                this.level.enemies.splice(index, 1);
-              }, 1000);
-
-             break; //nach einem gekillten Chicken keine weiteren Gegner prüfen
-            } else {
-              this.character.hit();
-              this.statusbar.setPercentage(this.character.energy);
-
-              break;
-            }
-          }
-
-          // Endboss verletzt Pepe bei Berührung
-          if (enemy instanceof Endboss) {
-            this.character.hit();
-            this.statusbar.setPercentage(this.character.energy);
-
-            break;
-          }
-        }
+  findStompedChicken(collidingEnemies) {
+    return collidingEnemies.find((enemy) => {
+      if (!(enemy instanceof Chicken) || enemy.isDead) {
+        return false;
       }
 
-      // Bottle vs Chicken
-      this.throwableObjects.forEach((bottle) => {
-        this.level.enemies.forEach((enemy) => {
-          if (
-            enemy instanceof Chicken &&
-            bottle.isColliding(enemy) &&
-            !enemy.isDead &&
-            !bottle.hasHit
-          ) {
-            enemy.kill();
-            bottle.bottleSplash();
+      const characterBottom =
+        this.character.y + this.character.height - this.character.offset.bottom;
 
-            setTimeout(() => {
-              let index = this.level.enemies.indexOf(enemy);
-              this.level.enemies.splice(index, 1);
-            }, 1000);
-          }
-        });
-      });
+      const enemyTop = enemy.y + enemy.offset.top;
 
-      // Fertige Splash-Flaschen entfernen
-      this.throwableObjects = this.throwableObjects.filter((bottle) => {
-        return !bottle.splashFinished;
+      return this.character.speedY < 0 && characterBottom <= enemyTop + 45;
+    });
+  }
+
+  killChickenByJump(chicken) {
+    chicken.kill();
+    this.character.speedY = 20;
+
+    setTimeout(() => {
+      let index = this.level.enemies.indexOf(chicken);
+      this.level.enemies.splice(index, 1);
+    }, 1000);
+  }
+
+  hitCharacter() {
+    this.character.hit();
+    this.statusbar.setPercentage(this.character.energy);
+  }
+
+  checkBottleChickenCollision() {
+    this.throwableObjects.forEach((bottle) => {
+      this.level.enemies.forEach((enemy) => {
+        if (
+          enemy instanceof Chicken &&
+          bottle.isColliding(enemy) &&
+          !enemy.isDead &&
+          !bottle.hasHit
+        ) {
+          this.killChickenWithBottle(enemy, bottle);
+        }
       });
-    }, 50);
+    });
+  }
+
+  killChickenWithBottle(chicken, bottle) {
+    chicken.kill();
+    bottle.bottleSplash();
+
+    setTimeout(() => {
+      let index = this.level.enemies.indexOf(chicken);
+      this.level.enemies.splice(index, 1);
+    }, 1000);
+  }
+
+  removeFinishedBottles() {
+    this.throwableObjects = this.throwableObjects.filter((bottle) => {
+      return !bottle.splashFinished;
+    });
   }
 
   checkThrowObjects() {
     setInterval(() => {
-      if (this.keyboard.D && this.canThrow && !this.character.isHurt()) {
-        let bottle = new ThrowableObject(
-          this.character.otherDirection
-            ? this.character.x
-            : this.character.x + 100,
-          this.character.y + 100,
-          this.character.otherDirection,
-        );
-
-        this.throwableObjects.push(bottle);
-
+      if (
+        this.keyboard.D &&
+        this.canThrow &&
+        !this.character.isHurt() &&
+        !this.character.isThrowing
+      ) {
+        this.character.throw();
+        setTimeout(() => {
+          let bottle = new ThrowableObject(
+            this.character.otherDirection
+              ? this.character.x
+              : this.character.x + 100,
+            this.character.y + 100,
+            this.character.otherDirection,
+          );
+          this.throwableObjects.push(bottle);
+        }, 160);
         this.canThrow = false;
         setTimeout(() => {
           this.canThrow = true;

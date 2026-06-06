@@ -139,10 +139,6 @@ class Character extends MovableObject {
         this.idleStartTime = new Date().getTime();
       }
 
-      if (this.world.keyboard.D && !this.isThrowing && this.canThrow()) {
-        this.throw();
-      }
-
       if (this.wasAboveGround && !this.isAboveGround()) {
         this.landingAnimationUntil = new Date().getTime() + 250;
       }
