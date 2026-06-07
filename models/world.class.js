@@ -6,9 +6,11 @@ class World {
   keyboard;
   camera_x = 0;
   statusbar = new Statusbar();
+  bottleStatusbar = new BottleStatusbar();
   throwableObjects = [];
   canThrow = true;
   collectedBottles = 0;
+  collectedCoins = 0;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -39,19 +41,34 @@ class World {
   }
 
   checkCollectableObjectCollision() {
-    this.level.collectableObjects.forEach((object, index) => {
-      if (this.character.isColliding(object)) {
-        this.collectObject(object, index);
-      }
-    });
+    this.level.collectableObjects = this.level.collectableObjects.filter(
+      (object) => {
+        if (this.character.isColliding(object)) {
+          return !this.collectObject(object);
+        }
+
+        return true;
+      },
+    );
   }
 
-  collectObject(object, index) {
+  collectObject(object) {
     if (object instanceof Bottle) {
-      this.collectedBottles++;
+      if (this.collectedBottles < 10) {
+        this.collectedBottles++;
+        this.bottleStatusbar.setPercentage(this.collectedBottles * 10);
+        return true;
+      }
+
+      return false;
     }
 
-    this.level.collectableObjects.splice(index, 1);
+    if (object instanceof Coin) {
+      this.collectedCoins++;
+      return true;
+    }
+
+    return false;
   }
 
   checkCharacterEnemyCollision() {
@@ -166,6 +183,7 @@ class World {
       if (
         this.keyboard.D &&
         this.canThrow &&
+        this.collectedBottles > 0 &&
         !this.character.isHurt() &&
         !this.character.isThrowing
       ) {
@@ -179,6 +197,8 @@ class World {
             this.character.otherDirection,
           );
           this.throwableObjects.push(bottle);
+          this.collectedBottles--;
+          this.bottleStatusbar.setPercentage(this.collectedBottles * 10);
         }, 160);
         this.canThrow = false;
         setTimeout(() => {
@@ -199,6 +219,7 @@ class World {
     this.addObjectsToMap(this.throwableObjects);
     this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.statusbar);
+    this.addToMap(this.bottleStatusbar);
 
     let self = this;
     requestAnimationFrame(function () {

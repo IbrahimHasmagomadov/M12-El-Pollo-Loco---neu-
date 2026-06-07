@@ -34,13 +34,25 @@ function createSmallChickens(amount) {
   return chickens;
 }
 
+function createCoins(amount) {
+  let coins = [];
+  let x = 450;
+
+  for (let i = 0; i < amount; i++) {
+    x += 300 + Math.random() * 180;
+    coins.push(new Coin(x));
+  }
+
+  return coins;
+}
+
 const level1 = new Level(
   [
     ...createChickens(10),
     ...createSmallChickens(8),
     new Endboss(),
   ],
-  createBottles(10),
+  [...createBottles(10), ...createCoins(12)],
   [new Cloud()],
   [
     new BackgroundObject("img/5_background/layers/air.png", -719),
