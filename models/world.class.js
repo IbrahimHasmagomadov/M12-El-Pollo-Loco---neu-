@@ -32,28 +32,43 @@ class World {
     }, 50);
   }
 
-  checkCharacterEnemyCollision() {
+checkCharacterEnemyCollision() {
     const collidingEnemies = this.getCollidingEnemies();
+
+    if (this.checkChickenJump(collidingEnemies)) return;
+    if (this.checkEndbossCollision(collidingEnemies)) return;
+
+    this.checkChickenCollision(collidingEnemies);
+}
+
+  checkChickenJump(collidingEnemies) {
     const stompedChicken = this.findStompedChicken(collidingEnemies);
     if (stompedChicken) {
       this.killChickenByJump(stompedChicken);
-      return;
+      return true;
     }
-    const touchedEndboss = collidingEnemies.find((enemy) => {
-      return enemy instanceof Endboss;
-    });
-    if (touchedEndboss) {
-      this.hitCharacter();
-      return;
-    }
-    const touchedChicken = collidingEnemies.find((enemy) => {
-      return enemy instanceof Chicken && !enemy.isDead;
-    });
-
-    if (touchedChicken) {
-      this.hitCharacter();
-    }
+    return false;
   }
+
+  checkEndbossCollision(collidingEnemies) {
+    const endboss = collidingEnemies.find(
+      (enemy) => enemy instanceof Endboss
+    ); 
+    if (endboss) {
+      this.hitCharacter();
+      return true;
+    }
+    return false;
+  } 
+
+  checkChickenCollision(collidingEnemies) {
+    const chicken = collidingEnemies.find(
+      (enemy) => enemy instanceof Chicken && !enemy.isDead
+    );
+    if (chicken) {
+      this.hitCharacter();
+    }
+  } 
 
   getCollidingEnemies() {
     return this.level.enemies.filter((enemy) => {
@@ -178,46 +193,51 @@ class World {
 
   addToMap(mo) {
     if (mo instanceof ThrowableObject) {
-      // Bottle rotation logic
-      this.ctx.save();
-
-      // Translate to center of bottle for rotation
-      this.ctx.translate(mo.x + mo.width / 2, mo.y + mo.height / 2);
-
-      // Flip horizontally if throwing left
-      if (mo.otherDirection) {
-        this.ctx.scale(-1, 1);
-      }
-
-      // Rotate bottle around its center
-      this.ctx.rotate((mo.rotation * Math.PI) / 100);
-
-      // Draw from center
-      this.ctx.drawImage(
-        mo.img,
-        -mo.width / 2,
-        -mo.height / 2,
-        mo.width,
-        mo.height,
-      );
-
-      this.ctx.restore();
+      this.addThrowableObjectToMap(mo);
     } else {
-      // logic for all other objects (Character, Chicken, Endboss)
-      if (mo.otherDirection) {
-        this.ctx.save();
-        this.ctx.translate(mo.width, 0);
-        this.ctx.scale(-1, 1);
-        mo.x = mo.x * -1;
-      }
-      this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
-      this.drawDebugBox(mo);
-      if (mo.otherDirection) {
-        mo.x = mo.x * -1;
-        this.ctx.restore();
-      }
+      this.addMovableObjectToMap(mo);
     }
   }
+
+  addThrowableObjectToMap(mo) {
+    this.ctx.save();
+
+    this.ctx.translate(mo.x + mo.width / 2, mo.y + mo.height / 2);
+
+    if (mo.otherDirection) {
+      this.ctx.scale(-1, 1);
+    }
+
+    this.ctx.rotate((mo.rotation * Math.PI) / 100);
+
+    this.ctx.drawImage(
+      mo.img,
+      -mo.width / 2,
+      -mo.height / 2,
+      mo.width,
+      mo.height,
+    );
+
+    this.ctx.restore();
+  }
+
+  addMovableObjectToMap(mo) {
+    if (mo.otherDirection) {
+      this.ctx.save();
+      this.ctx.translate(mo.width, 0);
+      this.ctx.scale(-1, 1);
+      mo.x = mo.x * -1;
+    }
+
+    this.ctx.drawImage(mo.img, mo.x, mo.y, mo.width, mo.height);
+    this.drawDebugBox(mo);
+
+    if (mo.otherDirection) {
+      mo.x = mo.x * -1;
+      this.ctx.restore();
+    }
+  }
+
   drawDebugBox(mo) {
     if (
       mo instanceof Character ||

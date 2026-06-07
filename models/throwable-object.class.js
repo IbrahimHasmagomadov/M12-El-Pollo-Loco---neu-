@@ -43,7 +43,7 @@ class ThrowableObject extends MovableObject {
       if (this.isSplashing) {
         this.playSplashAnimation();
       } else {
-        this.rotation += 10;
+        this.rotation += 15;
         if (this.otherDirection) {
           this.x -= 10;
         } else {
