@@ -24,6 +24,10 @@ class World {
     this.statusbar.setPercentage(this.character.energy);
   }
 
+  isChicken(enemy) {
+    return enemy instanceof Chicken || enemy instanceof SmallChicken;
+  }
+
   checkCollisions() {
     setInterval(() => {
       this.checkCharacterEnemyCollision();
@@ -63,7 +67,7 @@ checkCharacterEnemyCollision() {
 
   checkChickenCollision(collidingEnemies) {
     const chicken = collidingEnemies.find(
-      (enemy) => enemy instanceof Chicken && !enemy.isDead
+      (enemy) => this.isChicken(enemy) && !enemy.isDead
     );
     if (chicken) {
       this.hitCharacter();
@@ -82,7 +86,7 @@ checkCharacterEnemyCollision() {
 
   findStompedChicken(collidingEnemies) {
     return collidingEnemies.find((enemy) => {
-      if (!(enemy instanceof Chicken) || enemy.isDead) {
+      if (!this.isChicken(enemy) || enemy.isDead) {
         return false;
       }
 
@@ -114,7 +118,7 @@ checkCharacterEnemyCollision() {
     this.throwableObjects.forEach((bottle) => {
       this.level.enemies.forEach((enemy) => {
         if (
-          enemy instanceof Chicken &&
+          this.isChicken(enemy) &&
           bottle.isColliding(enemy) &&
           !enemy.isDead &&
           !bottle.hasHit
@@ -241,7 +245,7 @@ checkCharacterEnemyCollision() {
   drawDebugBox(mo) {
     if (
       mo instanceof Character ||
-      mo instanceof Chicken ||
+      this.isChicken(mo) ||
       mo instanceof Endboss
     ) {
       this.ctx.save();
