@@ -8,6 +8,7 @@ class World {
   statusbar = new Statusbar();
   throwableObjects = [];
   canThrow = true;
+  collectedBottles = 0;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -32,18 +33,35 @@ class World {
     setInterval(() => {
       this.checkCharacterEnemyCollision();
       this.checkBottleChickenCollision();
+      this.checkCollectableObjectCollision();
       this.removeFinishedBottles();
     }, 50);
   }
 
-checkCharacterEnemyCollision() {
+  checkCollectableObjectCollision() {
+    this.level.collectableObjects.forEach((object, index) => {
+      if (this.character.isColliding(object)) {
+        this.collectObject(object, index);
+      }
+    });
+  }
+
+  collectObject(object, index) {
+    if (object instanceof Bottle) {
+      this.collectedBottles++;
+    }
+
+    this.level.collectableObjects.splice(index, 1);
+  }
+
+  checkCharacterEnemyCollision() {
     const collidingEnemies = this.getCollidingEnemies();
 
     if (this.checkChickenJump(collidingEnemies)) return;
     if (this.checkEndbossCollision(collidingEnemies)) return;
 
     this.checkChickenCollision(collidingEnemies);
-}
+  }
 
   checkChickenJump(collidingEnemies) {
     const stompedChicken = this.findStompedChicken(collidingEnemies);
@@ -55,24 +73,22 @@ checkCharacterEnemyCollision() {
   }
 
   checkEndbossCollision(collidingEnemies) {
-    const endboss = collidingEnemies.find(
-      (enemy) => enemy instanceof Endboss
-    ); 
+    const endboss = collidingEnemies.find((enemy) => enemy instanceof Endboss);
     if (endboss) {
       this.hitCharacter();
       return true;
     }
     return false;
-  } 
+  }
 
   checkChickenCollision(collidingEnemies) {
     const chicken = collidingEnemies.find(
-      (enemy) => this.isChicken(enemy) && !enemy.isDead
+      (enemy) => this.isChicken(enemy) && !enemy.isDead,
     );
     if (chicken) {
       this.hitCharacter();
     }
-  } 
+  }
 
   getCollidingEnemies() {
     return this.level.enemies.filter((enemy) => {
@@ -177,6 +193,7 @@ checkCharacterEnemyCollision() {
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgroundObjects);
     this.addObjectsToMap(this.level.clouds);
+    this.addObjectsToMap(this.level.collectableObjects);
     this.addToMap(this.character);
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.throwableObjects);

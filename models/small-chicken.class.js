@@ -19,13 +19,17 @@ class SmallChicken extends MovableObject {
     "img/3_enemies_chicken/chicken_small/1_walk/3_w.png",
   ];
 
-  constructor() {
+  constructor(x) {
     super().loadImage("img/3_enemies_chicken/chicken_small/1_walk/1_w.png");
     this.loadImages(this.IMAGES_WALKING);
     let deadImage = new Image();
     deadImage.src = this.IMAGE_DEAD;
     this.imageCache[this.IMAGE_DEAD] = deadImage;
-    this.x = 700 + Math.random() * 500;
+    if (x !== undefined) {
+      this.x = x;
+    } else {
+      this.x = 700 + Math.random() * 500;
+    }
     this.speed = this.speed + Math.random() * 0.3;
     this.animate();
   }
