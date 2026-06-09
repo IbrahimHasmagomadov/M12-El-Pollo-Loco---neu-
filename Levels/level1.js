@@ -3,7 +3,7 @@ function createBottles(amount) {
   let x = 400;
 
   for (let i = 0; i < amount; i++) {
-    x += 200 + Math.random() * 250;
+    x += 100 + Math.random() * 250;
     bottles.push(new Bottle(x));
   }
 
@@ -48,11 +48,11 @@ function createCoins(amount) {
 
 const level1 = new Level(
   [
-    ...createChickens(10),
-    ...createSmallChickens(8),
+    ...createChickens(15),
+    ...createSmallChickens(10),
     new Endboss(),
   ],
-  [...createBottles(10), ...createCoins(12)],
+  [...createBottles(30), ...createCoins(12)],
   [new Cloud()],
   [
     new BackgroundObject("img/5_background/layers/air.png", -719),

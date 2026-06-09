@@ -7,15 +7,22 @@ class World {
   camera_x = 0;
   statusbar = new Statusbar();
   bottleStatusbar = new BottleStatusbar();
+  coinStatusbar = new CoinStatusbar();
+  endbossStatusbar = new EndbossStatusbar();
+  showEndbossStatusbar = true;
   throwableObjects = [];
   canThrow = true;
   collectedBottles = 0;
   collectedCoins = 0;
+  bottleCounterImage = new Image();
+  coinCounterImage = new Image();
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
     this.canvas = canvas;
     this.keyboard = keyboard;
+    this.bottleCounterImage.src = "img/6_salsa_bottle/salsa_bottle.png";
+    this.coinCounterImage.src = "img/8_coin/coin_1.png";
     this.draw();
     this.setWorld();
     this.checkCollisions();
@@ -37,7 +44,25 @@ class World {
       this.checkBottleChickenCollision();
       this.checkCollectableObjectCollision();
       this.removeFinishedBottles();
+      this.checkBottleEndbossCollision();
     }, 50);
+  }
+
+  checkBottleEndbossCollision() {
+    this.throwableObjects.forEach((bottle) => {
+      this.level.enemies.forEach((enemy) => {
+        if (
+          enemy instanceof Endboss &&
+          bottle.isColliding(enemy) &&
+          !enemy.isDead &&
+          !bottle.hasHit
+        ) {
+          enemy.hit();
+          bottle.bottleSplash();
+          this.endbossStatusbar.setPercentage(enemy.energy);
+        }
+      });
+    });
   }
 
   checkCollectableObjectCollision() {
@@ -65,6 +90,7 @@ class World {
 
     if (object instanceof Coin) {
       this.collectedCoins++;
+      this.coinStatusbar.setPercentage(this.collectedCoins * 10);
       return true;
     }
 
@@ -73,10 +99,8 @@ class World {
 
   checkCharacterEnemyCollision() {
     const collidingEnemies = this.getCollidingEnemies();
-
     if (this.checkChickenJump(collidingEnemies)) return;
     if (this.checkEndbossCollision(collidingEnemies)) return;
-
     this.checkChickenCollision(collidingEnemies);
   }
 
@@ -158,6 +182,8 @@ class World {
         ) {
           this.killChickenWithBottle(enemy, bottle);
         }
+        if (enemy instanceof Endboss && bottle.isColliding(enemy)) {
+        }
       });
     });
   }
@@ -219,13 +245,30 @@ class World {
     this.addObjectsToMap(this.throwableObjects);
     this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.statusbar);
-    this.addToMap(this.bottleStatusbar);
+    //this.addToMap(this.bottleStatusbar);
+    //this.addToMap(this.coinStatusbar);
+    this.addToMap(this.statusbar);
+    this.drawCollectableCounters();
+    if (this.showEndbossStatusbar) {
+      this.addToMap(this.endbossStatusbar);
+    }
 
     let self = this;
     requestAnimationFrame(function () {
       self.draw();
     });
   }
+
+drawCollectableCounters() {
+  this.ctx.font = "bold 32px Comic Sans MS";
+  this.ctx.fillStyle = "white";
+
+  this.ctx.drawImage(this.bottleCounterImage, 8, 55, 50, 55);
+  this.ctx.fillText(this.collectedBottles, 60, 95);
+
+  this.ctx.drawImage(this.coinCounterImage, 95, 45, 80, 80);
+  this.ctx.fillText(this.collectedCoins, 165, 95);
+}
 
   addObjectsToMap(objects) {
     objects.forEach((o) => {
