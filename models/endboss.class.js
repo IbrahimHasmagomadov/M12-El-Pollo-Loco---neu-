@@ -25,7 +25,7 @@ class Endboss extends MovableObject {
   constructor() {
     super().loadImage("img/4_enemie_boss_chicken/2_alert/G11.png");
     this.loadImages(this.IMAGES_WALKING);
-    this.x = 1700;
+    this.x = 3600;
     this.animate();
   }
 
@@ -35,8 +35,8 @@ class Endboss extends MovableObject {
     }, 260);
   }
 
-  hit() {
-    this.energy -= 10;
+  hit(damage) {
+    this.energy -= damage;
 
     if (this.energy <= 0) {
       this.energy = 0;

@@ -13,23 +13,23 @@ class MovableObject extends DrawableObject {
     bottom: 0,
   };
 
-applyGravity() {
-  setInterval(() => {
-    if (this.isAboveGround() || this.speedY > 0) {
-      this.y -= this.speedY;
-      this.speedY -= this.acceleration;
-    } else {
-      this.y = this.groundY;
-      this.speedY = 0;
-    }
-  }, 1000 / 30);
-}
-
+  applyGravity() {
+    setInterval(() => {
+      if (this.isAboveGround() || this.speedY > 0) {
+        this.y -= this.speedY;
+        this.speedY -= this.acceleration;
+      } else {
+        this.y = this.groundY;
+        this.speedY = 0;
+      }
+    }, 1000 / 30);
+  }
 
   isAboveGround() {
     return this.y < this.groundY;
   }
 
+  /*
   hit() {
     this.energy -= 20;
     if (this.energy < 0) {
@@ -38,6 +38,7 @@ applyGravity() {
       this.lastHit = new Date().getTime();
     }
   }
+*/
 
   isHurt() {
     let timepassed = new Date().getTime() - this.lastHit;
@@ -74,6 +75,6 @@ applyGravity() {
   }
 
   jump() {
-    this.speedY = 25;
+    this.speedY = 20;
   }
 }

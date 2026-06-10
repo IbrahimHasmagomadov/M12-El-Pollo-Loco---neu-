@@ -1,14 +1,14 @@
 function createBottles(amount) {
-  let bottles = [];
-  let x = 400;
+    let bottles = [];
+    let x = 400;
 
-  for (let i = 0; i < amount; i++) {
-    x += 100 + Math.random() * 250;
-    bottles.push(new Bottle(x));
-  }
+    for (let i = 0; i < amount; i++) {
+      x += 100 + Math.random() * 250;
+      bottles.push(new Bottle(x));
+    }
 
-  return bottles;
-}
+    return bottles;
+  };
 
 function createChickens(amount) {
   let chickens = [];
@@ -47,12 +47,14 @@ function createCoins(amount) {
 }
 
 const level1 = new Level(
-  [
-    ...createChickens(15),
-    ...createSmallChickens(10),
-    new Endboss(),
-  ],
+  [...createChickens(15), ...createSmallChickens(10), new Endboss()],
   [...createBottles(30), ...createCoins(12)],
+  [
+    new Stone(2350),
+    new Cactus(1400),
+    new Stone(4000, "big"),
+    new Cactus(2500, "big"),
+  ],
   [new Cloud()],
   [
     new BackgroundObject("img/5_background/layers/air.png", -719),

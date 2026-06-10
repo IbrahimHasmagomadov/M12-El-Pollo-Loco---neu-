@@ -9,7 +9,7 @@ class World {
   bottleStatusbar = new BottleStatusbar();
   coinStatusbar = new CoinStatusbar();
   endbossStatusbar = new EndbossStatusbar();
-  showEndbossStatusbar = true;
+  showEndbossStatusbar = false;
   throwableObjects = [];
   canThrow = true;
   collectedBottles = 0;
@@ -45,26 +45,30 @@ class World {
       this.checkCollectableObjectCollision();
       this.removeFinishedBottles();
       this.checkBottleEndbossCollision();
+      this.checkObstacleCollision();
     }, 50);
   }
 
-  checkBottleEndbossCollision() {
+  checkCharacterEnemyCollision() {
+    const collidingEnemies = this.getCollidingEnemies();
+    if (this.checkChickenJump(collidingEnemies)) return;
+    if (this.checkEndbossCollision(collidingEnemies)) return;
+    this.checkChickenCollision(collidingEnemies);
+  }
+  checkBottleChickenCollision() {
     this.throwableObjects.forEach((bottle) => {
       this.level.enemies.forEach((enemy) => {
         if (
-          enemy instanceof Endboss &&
+          this.isChicken(enemy) &&
           bottle.isColliding(enemy) &&
           !enemy.isDead &&
           !bottle.hasHit
         ) {
-          enemy.hit();
-          bottle.bottleSplash();
-          this.endbossStatusbar.setPercentage(enemy.energy);
+          this.killChickenWithBottle(enemy, bottle);
         }
       });
     });
   }
-
   checkCollectableObjectCollision() {
     this.level.collectableObjects = this.level.collectableObjects.filter(
       (object) => {
@@ -76,7 +80,36 @@ class World {
       },
     );
   }
+  removeFinishedBottles() {
+    this.throwableObjects = this.throwableObjects.filter((bottle) => {
+      return !bottle.splashFinished;
+    });
+  }
+  checkBottleEndbossCollision() {
+    this.throwableObjects.forEach((bottle) => {
+      this.level.enemies.forEach((enemy) => {
+        if (
+          enemy instanceof Endboss &&
+          bottle.isColliding(enemy) &&
+          !enemy.isDead &&
+          !bottle.hasHit
+        ) {
+          enemy.hit(5);
+          bottle.bottleSplash();
+          this.endbossStatusbar.setPercentage(enemy.energy);
+        }
+      });
+    });
+  }
+  checkObstacleCollision() {
+    this.level.obstacles.forEach((obstacle) => {
+      if (this.character.isColliding(obstacle)) {
+        console.log("Obstacle berührt:", obstacle);
+      }
+    });
+  }
 
+  
   collectObject(object) {
     if (object instanceof Bottle) {
       if (this.collectedBottles < 10) {
@@ -96,14 +129,6 @@ class World {
 
     return false;
   }
-
-  checkCharacterEnemyCollision() {
-    const collidingEnemies = this.getCollidingEnemies();
-    if (this.checkChickenJump(collidingEnemies)) return;
-    if (this.checkEndbossCollision(collidingEnemies)) return;
-    this.checkChickenCollision(collidingEnemies);
-  }
-
   checkChickenJump(collidingEnemies) {
     const stompedChicken = this.findStompedChicken(collidingEnemies);
     if (stompedChicken) {
@@ -171,23 +196,6 @@ class World {
     this.statusbar.setPercentage(this.character.energy);
   }
 
-  checkBottleChickenCollision() {
-    this.throwableObjects.forEach((bottle) => {
-      this.level.enemies.forEach((enemy) => {
-        if (
-          this.isChicken(enemy) &&
-          bottle.isColliding(enemy) &&
-          !enemy.isDead &&
-          !bottle.hasHit
-        ) {
-          this.killChickenWithBottle(enemy, bottle);
-        }
-        if (enemy instanceof Endboss && bottle.isColliding(enemy)) {
-        }
-      });
-    });
-  }
-
   killChickenWithBottle(chicken, bottle) {
     chicken.kill();
     bottle.bottleSplash();
@@ -196,12 +204,6 @@ class World {
       let index = this.level.enemies.indexOf(chicken);
       this.level.enemies.splice(index, 1);
     }, 1000);
-  }
-
-  removeFinishedBottles() {
-    this.throwableObjects = this.throwableObjects.filter((bottle) => {
-      return !bottle.splashFinished;
-    });
   }
 
   checkThrowObjects() {
@@ -240,13 +242,12 @@ class World {
     this.addObjectsToMap(this.level.backgroundObjects);
     this.addObjectsToMap(this.level.clouds);
     this.addObjectsToMap(this.level.collectableObjects);
+    this.addObjectsToMap(this.level.obstacles);
     this.addToMap(this.character);
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.throwableObjects);
     this.ctx.translate(-this.camera_x, 0);
     this.addToMap(this.statusbar);
-    //this.addToMap(this.bottleStatusbar);
-    //this.addToMap(this.coinStatusbar);
     this.addToMap(this.statusbar);
     this.drawCollectableCounters();
     if (this.showEndbossStatusbar) {
@@ -259,16 +260,16 @@ class World {
     });
   }
 
-drawCollectableCounters() {
-  this.ctx.font = "bold 32px Comic Sans MS";
-  this.ctx.fillStyle = "white";
+  drawCollectableCounters() {
+    this.ctx.font = "bold 32px Comic Sans MS";
+    this.ctx.fillStyle = "white";
 
-  this.ctx.drawImage(this.bottleCounterImage, 8, 55, 50, 55);
-  this.ctx.fillText(this.collectedBottles, 60, 95);
+    this.ctx.drawImage(this.bottleCounterImage, 8, 55, 50, 55);
+    this.ctx.fillText(this.collectedBottles, 60, 95);
 
-  this.ctx.drawImage(this.coinCounterImage, 95, 45, 80, 80);
-  this.ctx.fillText(this.collectedCoins, 165, 95);
-}
+    this.ctx.drawImage(this.coinCounterImage, 95, 45, 80, 80);
+    this.ctx.fillText(this.collectedCoins, 165, 95);
+  }
 
   addObjectsToMap(objects) {
     objects.forEach((o) => {
@@ -327,7 +328,8 @@ drawCollectableCounters() {
     if (
       mo instanceof Character ||
       this.isChicken(mo) ||
-      mo instanceof Endboss
+      mo instanceof Endboss ||
+      mo instanceof Obstacle
     ) {
       this.ctx.save();
       this.ctx.strokeStyle = "red";
