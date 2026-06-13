@@ -29,7 +29,7 @@ class MovableObject extends DrawableObject {
     return this.y < this.groundY;
   }
 
-  /*
+  
   hit() {
     this.energy -= 20;
     if (this.energy < 0) {
@@ -38,7 +38,7 @@ class MovableObject extends DrawableObject {
       this.lastHit = new Date().getTime();
     }
   }
-*/
+
 
   isHurt() {
     let timepassed = new Date().getTime() - this.lastHit;

@@ -12,6 +12,9 @@ class Character extends MovableObject {
     bottom: 10,
   };
   lastThrow = 0;
+  isKnockback = false;
+  knockbackEnd = 0;
+  knockbackDirection = 0;
 
   idleStartTime = new Date().getTime();
   animationFrame = 0;
@@ -23,19 +26,40 @@ class Character extends MovableObject {
 
   IMAGE_RIP = "img/You won, you lost/RIP.png";
 
-  IMAGES_IDLE = Array.from({ length: 10 },(_, i) => `img/2_character_pepe/1_idle/idle/I-${i + 1}.png`,);
+  IMAGES_IDLE = Array.from(
+    { length: 10 },
+    (_, i) => `img/2_character_pepe/1_idle/idle/I-${i + 1}.png`,
+  );
 
-  IMAGES_LONG_IDLE = Array.from({ length: 10 },(_, i) => `img/2_character_pepe/1_idle/long_idle/I-${i + 11}.png`,);
+  IMAGES_LONG_IDLE = Array.from(
+    { length: 10 },
+    (_, i) => `img/2_character_pepe/1_idle/long_idle/I-${i + 11}.png`,
+  );
 
-  IMAGES_WALKING = Array.from({ length: 6 },(_, i) => `img/2_character_pepe/2_walk/W-${i + 21}.png`,);
+  IMAGES_WALKING = Array.from(
+    { length: 6 },
+    (_, i) => `img/2_character_pepe/2_walk/W-${i + 21}.png`,
+  );
 
-  IMAGES_THROW = Array.from({ length: 2 },(_, i) => `img/2_character_pepe/6_throw/throw-${i + 1}.png`,);
+  IMAGES_THROW = Array.from(
+    { length: 2 },
+    (_, i) => `img/2_character_pepe/6_throw/throw-${i + 1}.png`,
+  );
 
-  IMAGES_JUMPING = Array.from({ length: 9 },(_, i) => `img/2_character_pepe/3_jump/J-${i + 31}.png`,);
+  IMAGES_JUMPING = Array.from(
+    { length: 9 },
+    (_, i) => `img/2_character_pepe/3_jump/J-${i + 31}.png`,
+  );
 
-  IMAGES_DEAD = Array.from({ length: 7 },(_, i) => `img/2_character_pepe/5_dead/D-${i + 51}.png`,);
+  IMAGES_DEAD = Array.from(
+    { length: 7 },
+    (_, i) => `img/2_character_pepe/5_dead/D-${i + 51}.png`,
+  );
 
-  IMAGES_HURT = Array.from({ length: 3 },(_, i) => `img/2_character_pepe/4_hurt/H-${i + 41}.png`,);
+  IMAGES_HURT = Array.from(
+    { length: 3 },
+    (_, i) => `img/2_character_pepe/4_hurt/H-${i + 41}.png`,
+  );
 
   world;
 
@@ -62,6 +86,17 @@ class Character extends MovableObject {
   animate() {
     setInterval(() => {
       if (this.isDead()) {
+        return;
+      }
+
+      if (this.isKnockback) {
+        this.x += this.knockbackDirection * 4;
+        this.world.camera_x = -this.x + 100;
+
+        if (new Date().getTime() > this.knockbackEnd) {
+          this.isKnockback = false;
+        }
+
         return;
       }
 
@@ -162,6 +197,13 @@ class Character extends MovableObject {
     } else {
       this.isThrowing = false;
     }
+  }
+
+  startKnockback(direction) {
+    this.isKnockback = true;
+    this.knockbackEnd = new Date().getTime() + 400;
+    this.knockbackDirection = direction;
+    this.speedY = 8;
   }
 
   playDeadAnimation() {

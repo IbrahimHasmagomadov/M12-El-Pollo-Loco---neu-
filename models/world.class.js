@@ -46,6 +46,7 @@ class World {
       this.removeFinishedBottles();
       this.checkBottleEndbossCollision();
       this.checkObstacleCollision();
+      this.checkCactusCollision();
     }, 50);
   }
 
@@ -109,7 +110,22 @@ class World {
     });
   }
 
-  
+  checkCactusCollision() {
+    this.level.obstacles.forEach((obstacle) => {
+      if (
+        obstacle instanceof Cactus &&
+        this.character.isColliding(obstacle) &&
+        !this.character.isHurt()
+      ) {
+        const direction = this.character.x < obstacle.x ? -1 : 1;
+
+        this.character.hit();
+        this.statusbar.setPercentage(this.character.energy);
+        this.character.startKnockback(direction);
+      }
+    });
+  }
+
   collectObject(object) {
     if (object instanceof Bottle) {
       if (this.collectedBottles < 10) {
@@ -247,7 +263,6 @@ class World {
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.throwableObjects);
     this.ctx.translate(-this.camera_x, 0);
-    this.addToMap(this.statusbar);
     this.addToMap(this.statusbar);
     this.drawCollectableCounters();
     if (this.showEndbossStatusbar) {
