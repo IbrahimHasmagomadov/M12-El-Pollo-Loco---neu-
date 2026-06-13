@@ -46,7 +46,9 @@ class World {
       this.removeFinishedBottles();
       this.checkBottleEndbossCollision();
       this.checkCactusCollision();
-    }, 50);
+      this.checkStoneTopCollision();
+      this.resetGroundYIfNotOnStone();
+    }, 1000 / 30);
   }
 
   checkCharacterEnemyCollision() {
@@ -116,6 +118,50 @@ class World {
       }
     });
   }
+  checkStoneTopCollision() {
+    this.level.obstacles.forEach((obstacle) => {
+      if (!(obstacle instanceof Stone)) {
+        return;
+      }
+
+      const characterBottom =
+        this.character.y + this.character.height - this.character.offset.bottom;
+
+      const stoneTop = obstacle.y + obstacle.offset.top;
+
+      if (
+        this.character.isColliding(obstacle) &&
+        this.character.speedY <= 0 &&
+        characterBottom <= stoneTop + 30
+      ) {
+        this.character.currentGroundY =
+          stoneTop - this.character.height + this.character.offset.bottom;
+        this.character.y = this.character.currentGroundY;
+        this.character.speedY = 0;
+      }
+    });
+  }
+resetGroundYIfNotOnStone() {
+  const onStone = this.level.obstacles.some((obstacle) => {
+    if (!(obstacle instanceof Stone)) return false;
+
+    const characterBottom =
+      this.character.y + this.character.height - this.character.offset.bottom;
+    const stoneTop = obstacle.y + obstacle.offset.top;
+
+    return (
+      this.character.x + this.character.width - this.character.offset.right > obstacle.x + obstacle.offset.left &&
+      this.character.x + this.character.offset.left < obstacle.x + obstacle.width - obstacle.offset.right &&
+      this.character.speedY <= 0 &&
+      characterBottom >= stoneTop &&
+      characterBottom <= stoneTop + 30
+    );
+  });
+
+  if (!onStone) {
+    this.character.currentGroundY = this.character.groundY;
+  }
+}
 
   isStoneBlocking(direction) {
     return this.level.obstacles.some((obstacle) => {

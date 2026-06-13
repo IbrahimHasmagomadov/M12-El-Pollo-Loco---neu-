@@ -15,7 +15,7 @@ function createChickens(amount) {
   let x = 500;
 
   for (let i = 0; i < amount; i++) {
-    x += 200 + Math.random() * 220;
+    x += 20 + Math.random() * 20;
     chickens.push(new Chicken(x));
   }
 

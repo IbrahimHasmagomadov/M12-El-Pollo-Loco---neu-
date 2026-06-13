@@ -20,14 +20,14 @@ class Stone extends Obstacle {
         "img/10_Obstacle/stone/small_stone.png",
         x,
         355,
-        120,
+        150,
         80
       );
 
       this.offset = {
         top: 27,
-        left: 35,
-        right: 40,
+        left: 55,
+        right: 50,
         bottom: 0,
       };
     }
