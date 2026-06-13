@@ -45,7 +45,6 @@ class World {
       this.checkCollectableObjectCollision();
       this.removeFinishedBottles();
       this.checkBottleEndbossCollision();
-      this.checkObstacleCollision();
       this.checkCactusCollision();
     }, 50);
   }
@@ -102,14 +101,6 @@ class World {
       });
     });
   }
-  checkObstacleCollision() {
-    this.level.obstacles.forEach((obstacle) => {
-      if (this.character.isColliding(obstacle)) {
-        console.log("Obstacle berührt:", obstacle);
-      }
-    });
-  }
-
   checkCactusCollision() {
     this.level.obstacles.forEach((obstacle) => {
       if (
@@ -123,6 +114,28 @@ class World {
         this.statusbar.setPercentage(this.character.energy);
         this.character.startKnockback(direction);
       }
+    });
+  }
+
+  isStoneBlocking(direction) {
+    return this.level.obstacles.some((obstacle) => {
+      if (!(obstacle instanceof Stone)) {
+        return false;
+      }
+
+      if (!this.character.isColliding(obstacle)) {
+        return false;
+      }
+
+      if (direction === "right") {
+        return this.character.x < obstacle.x;
+      }
+
+      if (direction === "left") {
+        return this.character.x > obstacle.x;
+      }
+
+      return false;
     });
   }
 
@@ -145,6 +158,7 @@ class World {
 
     return false;
   }
+
   checkChickenJump(collidingEnemies) {
     const stompedChicken = this.findStompedChicken(collidingEnemies);
     if (stompedChicken) {

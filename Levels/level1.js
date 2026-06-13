@@ -47,7 +47,7 @@ function createCoins(amount) {
 }
 
 const level1 = new Level(
-  [...createChickens(15), ...createSmallChickens(10), new Endboss()],
+  [...createChickens(0), ...createSmallChickens(0), new Endboss()],
   [...createBottles(30), ...createCoins(12)],
   [
     new Stone(2350),

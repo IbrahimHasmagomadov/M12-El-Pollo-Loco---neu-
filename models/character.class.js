@@ -96,17 +96,16 @@ class Character extends MovableObject {
         if (new Date().getTime() > this.knockbackEnd) {
           this.isKnockback = false;
         }
-
         return;
       }
 
-      if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+      if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x && !this.world.isStoneBlocking("right")) {
         this.moveRight();
         this.otherDirection = false;
         this.idleStartTime = new Date().getTime();
       }
 
-      if (this.world.keyboard.LEFT && this.x > -50) {
+      if (this.world.keyboard.LEFT && this.x > -50 && !this.world.isStoneBlocking("left")) {
         this.moveLeft();
         this.otherDirection = true;
         this.idleStartTime = new Date().getTime();
