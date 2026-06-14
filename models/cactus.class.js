@@ -4,13 +4,13 @@ class Cactus extends Obstacle {
       super(
         "img/10_Obstacle/cactus/1big_cactus_.png",
         x,
-        250,
+        235,
         100,
-        180
+        195
       );
 
       this.offset = {
-        top: 10,
+        top: 20,
         left: 20,
         right: 20,
         bottom: 10,

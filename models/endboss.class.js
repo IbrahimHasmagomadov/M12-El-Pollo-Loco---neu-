@@ -10,6 +10,10 @@ class Endboss extends MovableObject {
   };
   energy = 100;
   isDead = false;
+  isActive = false;
+  speed = 2;
+  minX = 3350;
+  maxX = 4550;
 
   IMAGES_WALKING = [
     "img/4_enemie_boss_chicken/2_alert/G5.png",
@@ -25,7 +29,7 @@ class Endboss extends MovableObject {
   constructor() {
     super().loadImage("img/4_enemie_boss_chicken/2_alert/G11.png");
     this.loadImages(this.IMAGES_WALKING);
-    this.x = 3600;
+    this.x = 4100;
     this.animate();
   }
 
@@ -33,6 +37,26 @@ class Endboss extends MovableObject {
     setInterval(() => {
       this.playAnimation(this.IMAGES_WALKING);
     }, 260);
+  }
+
+  activate() {
+    this.isActive = true;
+  }
+
+  moveToCharacter(character) {
+    if (!this.isActive || this.isDead) {
+      return;
+    }
+
+    if (character.x < this.x && this.x > this.minX) {
+      this.x -= this.speed;
+      this.otherDirection = false;
+    }
+
+    if (character.x > this.x && this.x < this.maxX) {
+      this.x += this.speed;
+      this.otherDirection = true;
+    }
   }
 
   hit(damage) {

@@ -4,8 +4,8 @@ class Stone extends Obstacle {
       super(
         "img/10_Obstacle/stone/big_stone.png",
         x,
-        -25,
-        620,
+        -15,
+        820,
         460
       );
 
@@ -19,9 +19,9 @@ class Stone extends Obstacle {
       super(
         "img/10_Obstacle/stone/small_stone.png",
         x,
-        355,
+        340,
         150,
-        80
+        100
       );
 
       this.offset = {

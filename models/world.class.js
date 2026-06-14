@@ -16,6 +16,7 @@ class World {
   collectedCoins = 0;
   bottleCounterImage = new Image();
   coinCounterImage = new Image();
+  debugZoom = 1; //tetweise
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -45,6 +46,7 @@ class World {
       this.checkCollectableObjectCollision();
       this.removeFinishedBottles();
       this.checkBottleEndbossCollision();
+      this.checkEndbossActivation();
       this.checkCactusCollision();
       this.checkStoneTopCollision();
       this.resetGroundYIfNotOnStone();
@@ -96,12 +98,24 @@ class World {
           !enemy.isDead &&
           !bottle.hasHit
         ) {
-          enemy.hit(5);
+          enemy.hit(10);
           bottle.bottleSplash();
           this.endbossStatusbar.setPercentage(enemy.energy);
         }
       });
     });
+  }
+  checkEndbossActivation() {
+    const endboss = this.level.enemies.find((enemy) => {
+      return enemy instanceof Endboss;
+    });
+    if (!endboss) {
+      return;
+    }
+    if (this.character.x > 3400) {
+      endboss.activate();
+      this.showEndbossStatusbar = true;
+    }
   }
   checkCactusCollision() {
     this.level.obstacles.forEach((obstacle) => {
@@ -141,46 +155,46 @@ class World {
       }
     });
   }
-resetGroundYIfNotOnStone() {
-  const onStone = this.level.obstacles.some((obstacle) => {
-    if (!(obstacle instanceof Stone)) return false;
+  resetGroundYIfNotOnStone() {
+    const onStone = this.level.obstacles.some((obstacle) => {
+      if (!(obstacle instanceof Stone)) return false;
 
-    const characterBottom =
-      this.character.y + this.character.height - this.character.offset.bottom;
-    const stoneTop = obstacle.y + obstacle.offset.top;
+      const characterBottom =
+        this.character.y + this.character.height - this.character.offset.bottom;
+      const stoneTop = obstacle.y + obstacle.offset.top;
 
-    return (
-      this.character.x + this.character.width - this.character.offset.right > obstacle.x + obstacle.offset.left &&
-      this.character.x + this.character.offset.left < obstacle.x + obstacle.width - obstacle.offset.right &&
-      this.character.speedY <= 0 &&
-      characterBottom >= stoneTop &&
-      characterBottom <= stoneTop + 30
-    );
-  });
+      return (
+        this.character.x + this.character.width - this.character.offset.right >
+          obstacle.x + obstacle.offset.left &&
+        this.character.x + this.character.offset.left <
+          obstacle.x + obstacle.width - obstacle.offset.right &&
+        this.character.speedY <= 0 &&
+        characterBottom >= stoneTop &&
+        characterBottom <= stoneTop + 30
+      );
+    });
 
-  if (!onStone) {
-    this.character.currentGroundY = this.character.groundY;
+    if (!onStone) {
+      this.character.currentGroundY = this.character.groundY;
+    }
   }
-}
 
-  isStoneBlocking(direction) {
+
+
+  isObstacleBlocking(direction) {
     return this.level.obstacles.some((obstacle) => {
-      if (!(obstacle instanceof Stone)) {
+      if (!(obstacle instanceof Stone || obstacle instanceof Cactus)) {
         return false;
       }
-
       if (!this.character.isColliding(obstacle)) {
         return false;
       }
-
       if (direction === "right") {
         return this.character.x < obstacle.x;
       }
-
       if (direction === "left") {
         return this.character.x > obstacle.x;
       }
-
       return false;
     });
   }
@@ -314,6 +328,10 @@ resetGroundYIfNotOnStone() {
 
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    this.ctx.save(); //testweise
+    this.ctx.scale(this.debugZoom, this.debugZoom); //testweise
+
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgroundObjects);
     this.addObjectsToMap(this.level.clouds);
@@ -323,9 +341,13 @@ resetGroundYIfNotOnStone() {
     this.addObjectsToMap(this.level.enemies);
     this.addObjectsToMap(this.throwableObjects);
     this.ctx.translate(-this.camera_x, 0);
+
+    this.ctx.restore(); //testweise
+
     this.addToMap(this.statusbar);
     this.drawCollectableCounters();
     if (this.showEndbossStatusbar) {
+      this.endbossStatusbar.slideIn();
       this.addToMap(this.endbossStatusbar);
     }
 

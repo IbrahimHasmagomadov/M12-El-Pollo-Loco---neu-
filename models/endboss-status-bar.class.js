@@ -9,17 +9,25 @@ class EndbossStatusbar extends DrawableObject {
   ];
 
   x = 500;
-  y = 10;
+  y = -60;
+  targetY = 10;
   width = 180;
   height = 50;
   percentage = 100;
 
   constructor() {
-    super().loadImage("img/7_statusbars/2_statusbar_endboss/orange/orange100.png");
+    super().loadImage(
+      "img/7_statusbars/2_statusbar_endboss/orange/orange100.png",
+    );
     this.loadImages(this.IMAGES);
     this.setPercentage(100);
   }
 
+  slideIn() {
+    if (this.y < this.targetY) {
+      this.y += 1;
+    }
+  }
   setPercentage(percentage) {
     this.percentage = percentage;
     let path = this.IMAGES[this.resolveImageIndex()];

@@ -85,73 +85,75 @@ class Character extends MovableObject {
   }
 
   animate() {
-    setInterval(() => {
-      if (this.isDead()) {
-        return;
-      }
+    setInterval(() => this.handleMovement(), 1000 / 60);
+    setInterval(() => this.handleAnimation(), 1000 / 10);
+  }
 
-      if (this.isKnockback) {
-        this.x += this.knockbackDirection * 4;
-        this.world.camera_x = -this.x + 100;
-
-        if (new Date().getTime() > this.knockbackEnd) {
-          this.isKnockback = false;
-        }
-        return;
-      }
-
-      if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x && !this.world.isStoneBlocking("right")) {
-        this.moveRight();
-        this.otherDirection = false;
-        this.idleStartTime = new Date().getTime();
-      }
-
-      if (this.world.keyboard.LEFT && this.x > -50 && !this.world.isStoneBlocking("left")) {
-        this.moveLeft();
-        this.otherDirection = true;
-        this.idleStartTime = new Date().getTime();
-      }
-
-      if (
-        (this.world.keyboard.SPACE || this.world.keyboard.UP) &&
-        !this.isAboveGround()
-      ) {
-        this.jump();
-        this.idleStartTime = new Date().getTime();
-      }
-
-      if (this.wasAboveGround && !this.isAboveGround()) {
-        this.landingAnimationUntil = new Date().getTime() + 250;
-      }
-
-      this.wasAboveGround = this.isAboveGround();
+  handleMovement() {
+    if (this.isDead()) return;
+    if (this.isKnockback) {
+      this.x += this.knockbackDirection * 4;
       this.world.camera_x = -this.x + 100;
-    }, 1000 / 60);
-
-    setInterval(() => {
-      if (this.isDead()) {
-        this.playDeadAnimation();
-      } else if (this.isHurt()) {
-        this.playAnimation(this.IMAGES_HURT);
-        this.idleStartTime = new Date().getTime();
-      } else if (this.isThrowing) {
-        this.playThrowAnimation();
-      } else if (this.isAboveGround()) {
-        this.playJumpAnimation();
-      } else if (
-        new Date().getTime() < this.landingAnimationUntil &&
-        !this.world.keyboard.RIGHT &&
-        !this.world.keyboard.LEFT
-      ) {
-        this.img = this.imageCache["img/2_character_pepe/3_jump/J-38.png"];
-      } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-        this.playAnimation(this.IMAGES_WALKING);
-      } else if (this.isLongIdle()) {
-        this.playAnimation(this.IMAGES_LONG_IDLE);
-      } else {
-        this.playAnimation(this.IMAGES_IDLE);
+      if (new Date().getTime() > this.knockbackEnd) {
+        this.isKnockback = false;
       }
-    }, 1000 / 10);
+      return;
+    }
+    if (
+      this.world.keyboard.RIGHT &&
+      this.x < this.world.level.level_end_x &&
+      !this.world.isObstacleBlocking("right")
+    ) {
+      this.moveRight();
+      this.otherDirection = false;
+      this.idleStartTime = new Date().getTime();
+    }
+    if (
+      this.world.keyboard.LEFT &&
+      this.x > -250 &&
+      !this.world.isObstacleBlocking("left")
+    ) {
+      this.moveLeft();
+      this.otherDirection = true;
+      this.idleStartTime = new Date().getTime();
+    }
+    if (
+      (this.world.keyboard.SPACE || this.world.keyboard.UP) &&
+      !this.isAboveGround()
+    ) {
+      this.jump();
+      this.idleStartTime = new Date().getTime();
+    }
+    if (this.wasAboveGround && !this.isAboveGround()) {
+      this.landingAnimationUntil = new Date().getTime() + 250;
+    }
+    this.wasAboveGround = this.isAboveGround();
+    this.world.camera_x = -this.x + 100;
+  }
+
+  handleAnimation() {
+    if (this.isDead()) {
+      this.playDeadAnimation();
+    } else if (this.isHurt()) {
+      this.playAnimation(this.IMAGES_HURT);
+      this.idleStartTime = new Date().getTime();
+    } else if (this.isThrowing) {
+      this.playThrowAnimation();
+    } else if (this.isAboveGround()) {
+      this.playJumpAnimation();
+    } else if (
+      new Date().getTime() < this.landingAnimationUntil &&
+      !this.world.keyboard.RIGHT &&
+      !this.world.keyboard.LEFT
+    ) {
+      this.img = this.imageCache["img/2_character_pepe/3_jump/J-38.png"];
+    } else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+      this.playAnimation(this.IMAGES_WALKING);
+    } else if (this.isLongIdle()) {
+      this.playAnimation(this.IMAGES_LONG_IDLE);
+    } else {
+      this.playAnimation(this.IMAGES_IDLE);
+    }
   }
 
   isLongIdle() {
