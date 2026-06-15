@@ -47,6 +47,7 @@ class World {
       this.removeFinishedBottles();
       this.checkBottleEndbossCollision();
       this.checkEndbossActivation();
+      this.checkEndbossBehavior();
       this.checkCactusCollision();
       this.checkStoneTopCollision();
       this.resetGroundYIfNotOnStone();
@@ -117,6 +118,17 @@ class World {
       this.showEndbossStatusbar = true;
     }
   }
+  checkEndbossBehavior() {
+    const endboss = this.level.enemies.find((enemy) => {
+      return enemy instanceof Endboss;
+    });
+
+    if (!endboss) {
+      return;
+    }
+
+    endboss.moveToCharacter(this.character);
+  }
   checkCactusCollision() {
     this.level.obstacles.forEach((obstacle) => {
       if (
@@ -178,8 +190,6 @@ class World {
       this.character.currentGroundY = this.character.groundY;
     }
   }
-
-
 
   isObstacleBlocking(direction) {
     return this.level.obstacles.some((obstacle) => {

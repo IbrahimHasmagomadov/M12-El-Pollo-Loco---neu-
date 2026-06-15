@@ -28,7 +28,7 @@ class ThrowableObject extends MovableObject {
     this.x = x;
     this.y = y;
 
-    this.speedY = 20;
+    this.speedY = 16;
     this.acceleration = 1.2;
 
     this.throw();
@@ -45,9 +45,9 @@ class ThrowableObject extends MovableObject {
       } else {
         this.rotation += 15;
         if (this.otherDirection) {
-          this.x -= 10;
+          this.x -= 13;
         } else {
-          this.x += 10;
+          this.x += 13;
         }
         this.y -= this.speedY;
         this.speedY -= this.acceleration;

@@ -9,7 +9,7 @@ class EndbossStatusbar extends DrawableObject {
   ];
 
   x = 500;
-  y = -60;
+  y = -40;
   targetY = 10;
   width = 180;
   height = 50;
@@ -25,7 +25,7 @@ class EndbossStatusbar extends DrawableObject {
 
   slideIn() {
     if (this.y < this.targetY) {
-      this.y += 1;
+      this.y += 0.5;
     }
   }
   setPercentage(percentage) {
