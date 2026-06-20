@@ -26,6 +26,8 @@ class Endboss extends MovableObject {
   jumpMoveSpeed = 9.5;
   isHurt = false;
   hurtUntil = 0;
+  deadAnimationFrame = 0;
+  deadAnimationPlayed = false;
 
   IMAGES_ALERT = [
     "img/4_enemie_boss_chicken/2_alert/G5.png",
@@ -78,7 +80,7 @@ class Endboss extends MovableObject {
   animate() {
     setInterval(() => {
       if (this.isDead) {
-        this.playAnimation(this.IMAGES_DEAD);
+        this.playDeadAnimation();
       } else if (this.isHurt) {
         this.playAnimation(this.IMAGES_HURT);
 
@@ -91,6 +93,21 @@ class Endboss extends MovableObject {
         this.playAnimation(this.IMAGES_ALERT);
       }
     }, 240);
+  }
+
+  playDeadAnimation() {
+    if (this.deadAnimationPlayed) {
+      this.img = this.imageCache[this.IMAGES_DEAD[this.IMAGES_DEAD.length - 1]];
+      return;
+    }
+
+    if (this.deadAnimationFrame < this.IMAGES_DEAD.length) {
+      let path = this.IMAGES_DEAD[this.deadAnimationFrame];
+      this.img = this.imageCache[path];
+      this.deadAnimationFrame++;
+    } else {
+      this.deadAnimationPlayed = true;
+    }
   }
 
   activate() {

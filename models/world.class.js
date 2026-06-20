@@ -16,7 +16,9 @@ class World {
   collectedCoins = 0;
   bottleCounterImage = new Image();
   coinCounterImage = new Image();
+  winScreenImage = new Image();
   debugZoom = 1; //tetweise
+  gameWon = false;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -24,6 +26,7 @@ class World {
     this.keyboard = keyboard;
     this.bottleCounterImage.src = "img/6_salsa_bottle/salsa_bottle.png";
     this.coinCounterImage.src = "img/8_coin/coin_1.png";
+    this.winScreenImage.src = "img/You won, you lost/You won A.png";
     this.draw();
     this.setWorld();
     this.checkCollisions();
@@ -50,6 +53,7 @@ class World {
       this.checkEndbossBehavior();
       this.checkCactusCollision();
       this.checkEndbossCactusCollision();
+      this.checkGameWon();
       this.checkStoneTopCollision();
       this.resetGroundYIfNotOnStone();
     }, 1000 / 30);
@@ -170,6 +174,16 @@ class World {
         this.endbossStatusbar.setPercentage(endboss.energy);
       }
     });
+  }
+
+  checkGameWon() {
+    const endboss = this.level.enemies.find((enemy) => {
+      return enemy instanceof Endboss;
+    });
+
+    if (endboss && endboss.deadAnimationPlayed) {
+      this.gameWon = true;
+    }
   }
 
   checkStoneTopCollision() {
@@ -388,11 +402,25 @@ class World {
       this.endbossStatusbar.slideIn();
       this.addToMap(this.endbossStatusbar);
     }
+    if (this.gameWon) {
+      this.drawWinScreen();
+    }
 
     let self = this;
     requestAnimationFrame(function () {
       self.draw();
     });
+  }
+
+  drawWinScreen() {
+    // Draw the win screen image over the entire canvas
+    this.ctx.drawImage(
+      this.winScreenImage,
+      0,
+      0,
+      this.canvas.width,
+      this.canvas.height,
+    );
   }
 
   drawCollectableCounters() {
