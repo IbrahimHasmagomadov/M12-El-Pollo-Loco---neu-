@@ -24,6 +24,8 @@ class Endboss extends MovableObject {
   hasJumpedToCactus = false;
   hasHitCactus = false;
   jumpMoveSpeed = 9.5;
+  isHurt = false;
+  hurtUntil = 0;
 
   IMAGES_ALERT = [
     "img/4_enemie_boss_chicken/2_alert/G5.png",
@@ -66,6 +68,8 @@ class Endboss extends MovableObject {
     super().loadImage("img/4_enemie_boss_chicken/2_alert/G11.png");
     this.loadImages(this.IMAGES_ALERT);
     this.loadImages(this.IMAGES_WALKING);
+    this.loadImages(this.IMAGES_HURT);
+    this.loadImages(this.IMAGES_DEAD);
     this.x = 4100;
     this.applyGravity();
     this.animate();
@@ -73,7 +77,15 @@ class Endboss extends MovableObject {
 
   animate() {
     setInterval(() => {
-      if (this.isMoving) {
+      if (this.isDead) {
+        this.playAnimation(this.IMAGES_DEAD);
+      } else if (this.isHurt) {
+        this.playAnimation(this.IMAGES_HURT);
+
+        if (new Date().getTime() > this.hurtUntil) {
+          this.isHurt = false;
+        }
+      } else if (this.isMoving) {
         this.playAnimation(this.IMAGES_WALKING);
       } else {
         this.playAnimation(this.IMAGES_ALERT);
@@ -139,10 +151,13 @@ class Endboss extends MovableObject {
 
   hit(damage) {
     this.energy -= damage;
+    this.isHurt = true;
+    this.hurtUntil = new Date().getTime() + 600;
 
     if (this.energy <= 0) {
       this.energy = 0;
       this.isDead = true;
+      this.isHurt = false;
     }
   }
 }
