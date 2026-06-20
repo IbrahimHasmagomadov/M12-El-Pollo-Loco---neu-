@@ -131,6 +131,8 @@ class Character extends MovableObject {
     this.world.camera_x = -this.x + 100;
   }
 
+
+  
   handleAnimation() {
     if (this.isDead()) {
       this.playDeadAnimation();

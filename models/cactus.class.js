@@ -4,9 +4,9 @@ class Cactus extends Obstacle {
       super(
         "img/10_Obstacle/cactus/1big_cactus_.png",
         x,
-        235,
+        225,
         100,
-        195
+        205
       );
 
       this.offset = {

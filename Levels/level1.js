@@ -51,11 +51,11 @@ const level1 = new Level(
   [...createBottles(20), ...createCoins(100)],
 
   [
-    new Stone(3050),
+    new Stone(3050), //3050
     new Cactus(970),
     new Cactus(1750),
-    new Stone(4470, "big"),
-    new Cactus(3200, "big"),
+    new Stone(4470, "big"), 
+    new Cactus(3220, "big"), //3200 + 20
     new WarningSign(3420),
   ],
   [new Cloud()],

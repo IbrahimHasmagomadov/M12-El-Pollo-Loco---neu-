@@ -19,9 +19,9 @@ class Stone extends Obstacle {
       super(
         "img/10_Obstacle/stone/small_stone.png",
         x,
-        340,
-        150,
-        100
+        320,
+        170,
+        120
       );
 
       this.offset = {

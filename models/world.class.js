@@ -118,6 +118,7 @@ class World {
       this.showEndbossStatusbar = true;
     }
   }
+
   checkEndbossBehavior() {
     const endboss = this.level.enemies.find((enemy) => {
       return enemy instanceof Endboss;
@@ -127,8 +128,15 @@ class World {
       return;
     }
 
+    endboss.moveDuringJump();
+    endboss.resetCactusJumpIfBackRight();
     endboss.moveToCharacter(this.character);
+
+    if (endboss.shouldJumpToCactus(this.character)) {
+      endboss.jumpToCactus();
+    }
   }
+
   checkCactusCollision() {
     this.level.obstacles.forEach((obstacle) => {
       if (

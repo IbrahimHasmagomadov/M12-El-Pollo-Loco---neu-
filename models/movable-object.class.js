@@ -13,15 +13,18 @@ class MovableObject extends DrawableObject {
     bottom: 0,
   };
 
-applyGravity() {
-  setInterval(() => {
-    if (this.isAboveGround() || this.speedY > 0) {
-      this.y -= this.speedY;
-      this.speedY -= this.acceleration;
-    }
-    // kein else mehr — Boden wird ausschließlich von checkCollisions() gesetzt
-  }, 1000 / 30);
-}
+  applyGravity() {
+    setInterval(() => {
+      if (this.isAboveGround() || this.speedY > 0) {
+        this.y -= this.speedY;
+        this.speedY -= this.acceleration;
+      }
+      if (this.y > this.currentGroundY) {
+        this.y = this.currentGroundY;
+        this.speedY = 0;
+      }
+    }, 1000 / 30);
+  }
 
   isAboveGround() {
     return this.y < this.currentGroundY;
@@ -36,7 +39,6 @@ applyGravity() {
     }
   }
 
-  
   isHurt() {
     let timepassed = new Date().getTime() - this.lastHit;
     timepassed = timepassed / 1000;
