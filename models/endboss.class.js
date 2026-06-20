@@ -116,8 +116,8 @@ class Endboss extends MovableObject {
   }
 
   jumpToCactus() {
-    this.speedY = 30;
-    this. acceleration = 1.5;
+    this.speedY = 26;
+    this. acceleration = 1.4;
     this.jumpDirection = -1;
     this.hasJumpedToCactus = true;
     this.otherDirection = false;
@@ -130,7 +130,7 @@ class Endboss extends MovableObject {
   }
 
   resetCactusJumpIfBackRight() {
-    if (!this.isAboveGround() && this.x > 3900) {
+    if (!this.isAboveGround() && this.x > 3750) {
       this.hasJumpedToCactus = false;
     }
   }
