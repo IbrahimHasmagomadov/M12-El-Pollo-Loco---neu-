@@ -135,6 +135,17 @@ class World {
 
     endboss.moveDuringJump();
     endboss.resetCactusJumpIfBackRight();
+
+    if (endboss.shouldJumpBackRight()) {
+      endboss.jumpBackRight();
+      return;
+    }
+
+    if (endboss.isReturningAfterCactus) {
+      endboss.moveBackRightAfterCactus();
+      return;
+    }
+
     endboss.moveToCharacter(this.character);
 
     if (endboss.shouldJumpToCactus(this.character)) {
@@ -171,6 +182,8 @@ class World {
       if (obstacle instanceof Cactus && endboss.isColliding(obstacle)) {
         endboss.hit(20);
         endboss.hasHitCactus = true;
+        // Start return phase: boss goes back to the right instead of chasing the character
+        endboss.isReturningAfterCactus = true;
         this.endbossStatusbar.setPercentage(endboss.energy);
       }
     });

@@ -13,7 +13,7 @@ class Endboss extends MovableObject {
   isDead = false;
   isActive = false;
   isMoving = false;
-  speed = 1.2;
+  speed = 3;
   minX = 3350;
   maxX = 4550;
   groundY = 55;
@@ -23,6 +23,10 @@ class Endboss extends MovableObject {
   jumpDirection = -1;
   hasJumpedToCactus = false;
   hasHitCactus = false;
+  hasJumpedBackRight = false;
+  isReturningAfterCactus = false;
+  jumpBackTriggerX = 3700;
+  returnCompleteX = 3750;
   jumpMoveSpeed = 9.5;
   isHurt = false;
   hurtUntil = 0;
@@ -153,6 +157,41 @@ class Endboss extends MovableObject {
     this.otherDirection = false;
   }
 
+  shouldJumpBackRight() {
+    return (
+      this.isReturningAfterCactus &&
+      !this.isDead &&
+      !this.isAboveGround() &&
+      !this.hasJumpedBackRight &&
+      this.x > this.jumpBackTriggerX
+    );
+  }
+
+  jumpBackRight() {
+    this.speedY = 26;
+    this.acceleration = 1.4;
+    this.jumpDirection = 1; // springt nach rechts
+    this.hasJumpedBackRight = true;
+    this.otherDirection = true;
+  }
+
+  moveBackRightAfterCactus() {
+    if (!this.isReturningAfterCactus) return;
+
+    this.isMoving = false;
+
+    if (!this.isAboveGround()) {
+      // Laufend zurück nach rechts bis zur Rückkehr-Schwelle
+      if (this.x < this.returnCompleteX && !this.isDead) {
+        this.x += this.speed;
+        this.otherDirection = true;
+        this.isMoving = true;
+      }
+    }
+
+    // Wenn er in der Luft ist, übernimmt moveDuringJump() die horizontale Bewegung
+  }
+
   moveDuringJump() {
     if (this.isAboveGround()) {
       this.x += this.jumpDirection * this.jumpMoveSpeed;
@@ -160,9 +199,11 @@ class Endboss extends MovableObject {
   }
 
   resetCactusJumpIfBackRight() {
-    if (!this.isAboveGround() && this.x > 3750) {
+    if (!this.isAboveGround() && this.x > this.returnCompleteX) {
       this.hasJumpedToCactus = false;
       this.hasHitCactus = false;
+      this.hasJumpedBackRight = false;
+      this.isReturningAfterCactus = false;
     }
   }
 
