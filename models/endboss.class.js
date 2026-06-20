@@ -22,7 +22,8 @@ class Endboss extends MovableObject {
   jumpInterval = 3000;
   jumpDirection = -1;
   hasJumpedToCactus = false;
-  jumpMoveSpeed = 9;
+  hasHitCactus = false;
+  jumpMoveSpeed = 9.5;
 
   IMAGES_ALERT = [
     "img/4_enemie_boss_chicken/2_alert/G5.png",
@@ -117,7 +118,7 @@ class Endboss extends MovableObject {
 
   jumpToCactus() {
     this.speedY = 26;
-    this. acceleration = 1.4;
+    this.acceleration = 1.4;
     this.jumpDirection = -1;
     this.hasJumpedToCactus = true;
     this.otherDirection = false;
@@ -132,6 +133,7 @@ class Endboss extends MovableObject {
   resetCactusJumpIfBackRight() {
     if (!this.isAboveGround() && this.x > 3750) {
       this.hasJumpedToCactus = false;
+      this.hasHitCactus = false;
     }
   }
 

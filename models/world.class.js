@@ -49,6 +49,7 @@ class World {
       this.checkEndbossActivation();
       this.checkEndbossBehavior();
       this.checkCactusCollision();
+      this.checkEndbossCactusCollision();
       this.checkStoneTopCollision();
       this.resetGroundYIfNotOnStone();
     }, 1000 / 30);
@@ -152,6 +153,25 @@ class World {
       }
     });
   }
+
+  checkEndbossCactusCollision() {
+    const endboss = this.level.enemies.find((enemy) => {
+      return enemy instanceof Endboss;
+    });
+
+    if (!endboss || endboss.isDead || endboss.hasHitCactus) {
+      return;
+    }
+
+    this.level.obstacles.forEach((obstacle) => {
+      if (obstacle instanceof Cactus && endboss.isColliding(obstacle)) {
+        endboss.hit(20);
+        endboss.hasHitCactus = true;
+        this.endbossStatusbar.setPercentage(endboss.energy);
+      }
+    });
+  }
+
   checkStoneTopCollision() {
     this.level.obstacles.forEach((obstacle) => {
       if (!(obstacle instanceof Stone)) {
