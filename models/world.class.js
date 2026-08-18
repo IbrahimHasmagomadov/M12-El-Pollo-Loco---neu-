@@ -17,7 +17,7 @@ class World {
   bottleCounterImage = new Image();
   coinCounterImage = new Image();
   winScreenImage = new Image();
-  debugZoom = 1; //tetweise
+  debugZoom = 1;
   gameWon = false;
   muted = false;
   running = true;
@@ -49,6 +49,9 @@ class World {
 
   checkCollisions() {
     const intervalId = setInterval(() => {
+      if (this.gameWon) {
+        return;
+      }
       this.checkCharacterEnemyCollision();
       this.checkBottleChickenCollision();
       this.checkCollectableObjectCollision();
@@ -130,6 +133,7 @@ class World {
       endboss.activate();
       this.showEndbossStatusbar = true;
       playSound("bossFirst");
+      playSound("pepe1");
     }
   }
 
@@ -191,7 +195,6 @@ class World {
         endboss.hit(20);
         playSound("stompedChicken");
         endboss.hasHitCactus = true;
-        // Start return phase: boss goes back to the right instead of chasing the character
         endboss.isReturningAfterCactus = true;
         this.endbossStatusbar.setPercentage(endboss.energy);
       }
@@ -204,6 +207,10 @@ class World {
     });
 
     if (endboss && endboss.deadAnimationPlayed) {
+      if (!this.winSoundPlayed) { 
+        playSound("pepeWin");
+        this.winSoundPlayed = true;
+      }
       this.gameWon = true;
     }
   }
@@ -305,7 +312,9 @@ class World {
   }
 
   checkEndbossCollision(collidingEnemies) {
-    const endboss = collidingEnemies.find((enemy) => enemy instanceof Endboss);
+    const endboss = collidingEnemies.find(
+      (enemy) => enemy instanceof Endboss && !enemy.isDead,
+    );
     if (endboss) {
       this.hitCharacter();
       return true;
@@ -390,6 +399,9 @@ class World {
 
   checkThrowObjects() {
     const intervalId = setInterval(() => {
+      if (this.gameWon) {
+        return;
+      }
       if (
         this.keyboard.D &&
         this.canThrow &&
@@ -427,8 +439,8 @@ class World {
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    this.ctx.save(); //testweise
-    this.ctx.scale(this.debugZoom, this.debugZoom); //testweise
+    this.ctx.save();
+    this.ctx.scale(this.debugZoom, this.debugZoom);
 
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgroundObjects);
@@ -440,7 +452,7 @@ class World {
     this.addObjectsToMap(this.throwableObjects);
     this.ctx.translate(-this.camera_x, 0);
 
-    this.ctx.restore(); //testweise
+    this.ctx.restore();
 
     this.addToMap(this.statusbar);
     this.drawCollectableCounters();
@@ -471,13 +483,18 @@ class World {
   }
 
   drawWinScreen() {
-    this.ctx.drawImage(
-      this.winScreenImage,
-      0,
-      0,
-      this.canvas.width,
-      this.canvas.height,
-    );
+    this.ctx.save();
+    this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.restore();
+
+
+    const boxWidth = 550;
+    const boxHeight = 300;
+    const boxX = (this.canvas.width - boxWidth) / 2;
+    const boxY = (this.canvas.height - boxHeight) / 2;
+
+    this.ctx.drawImage(this.winScreenImage, boxX, boxY, boxWidth, boxHeight);
   }
 
   drawCollectableCounters() {

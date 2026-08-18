@@ -13,11 +13,6 @@ class DrawableObject {
     this.img.onload = () => {};
   }
 
-
-    /**
-   *
-   * @param {Array} arr 
-   */
   loadImages(arr) {
     arr.forEach((path) => {
       let img = new Image();

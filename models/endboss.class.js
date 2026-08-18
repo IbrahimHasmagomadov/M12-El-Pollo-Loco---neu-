@@ -40,9 +40,13 @@ class Endboss extends MovableObject {
   ];
   IMAGES_WALKING = [
     "img/4_enemie_boss_chicken/1_walk/G1.png",
-    "img/4_enemie_boss_chicken/1_walk/G2.png",
+    "img/4_enemie_boss_chicken/3_attack/G13.png",
     "img/4_enemie_boss_chicken/1_walk/G3.png",
-    "img/4_enemie_boss_chicken/1_walk/G4.png",
+    "img/4_enemie_boss_chicken/3_attack/G16.png",
+    "img/4_enemie_boss_chicken/1_walk/G1.png",
+    "img/4_enemie_boss_chicken/3_attack/G13.png",
+    "img/4_enemie_boss_chicken/1_walk/G3.png",
+    "img/4_enemie_boss_chicken/3_attack/G20.png",
   ];
   IMAGES_ATTACK = [
     "img/4_enemie_boss_chicken/3_attack/G16.png",
@@ -68,7 +72,7 @@ class Endboss extends MovableObject {
     this.loadImages(this.IMAGES_ATTACK);
     this.loadImages(this.IMAGES_HURT);
     this.loadImages(this.IMAGES_DEAD);
-    this.x = 4100;
+    this.x = 4200;
     this.applyGravity();
     this.animate();
   }
@@ -144,6 +148,7 @@ class Endboss extends MovableObject {
   }
 
   jumpToCactus() {
+    playSound("bossJump");
     this.speedY = 26;
     this.acceleration = 1.4;
     this.jumpDirection = -1;
@@ -164,7 +169,7 @@ class Endboss extends MovableObject {
   jumpBackRight() {
     this.speedY = 26;
     this.acceleration = 1.4;
-    this.jumpDirection = 1; // springt nach rechts
+    this.jumpDirection = 1;
     this.hasJumpedBackRight = true;
     this.otherDirection = true;
   }
@@ -175,15 +180,12 @@ class Endboss extends MovableObject {
     this.isMoving = false;
 
     if (!this.isAboveGround()) {
-      // Laufend zurück nach rechts bis zur Rückkehr-Schwelle
       if (this.x < this.returnCompleteX && !this.isDead) {
         this.x += this.speed;
         this.otherDirection = true;
         this.isMoving = true;
       }
     }
-
-    // Wenn er in der Luft ist, übernimmt moveDuringJump() die horizontale Bewegung
   }
 
   moveDuringJump() {

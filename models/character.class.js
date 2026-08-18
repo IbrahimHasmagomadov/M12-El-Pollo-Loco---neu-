@@ -95,6 +95,11 @@ class Character extends MovableObject {
       return;
     }
 
+    if (this.world.gameWon) {
+      stopWalkSound();
+      return;
+    }
+
     let isWalking = false;
 
     if (this.isKnockback) {
@@ -175,6 +180,8 @@ class Character extends MovableObject {
   handleAnimation() {
     if (this.isDead()) {
       this.playDeadAnimation();
+    } else if (this.world.gameWon) {
+      this.playAnimation(this.IMAGES_IDLE);
     } else if (this.isHurt()) {
       this.playAnimation(this.IMAGES_HURT);
       this.idleStartTime = new Date().getTime();

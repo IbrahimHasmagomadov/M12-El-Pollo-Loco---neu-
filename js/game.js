@@ -13,6 +13,9 @@ function init() {
 function createSounds() {
   sounds = {
     bossFirst: new Audio("audio/boss-first-sound.mp3"),
+    bossJump: new Audio("audio/boss-jump.mp3"),
+    pepe1: new Audio("audio/pepe-1.mp3"),
+    pepeWin: new Audio("audio/pepe-win.mp3"),
     bottlePickup: new Audio("audio/bottle-pickup.mp3"),
     bottleSmash: new Audio("audio/bottle-smash.wav"),
     bottleThrow: new Audio("audio/bottle-throw.wav"),
@@ -72,13 +75,11 @@ function stopWalkSound() {
 function startGame() {
   playSound("click");
 
-  // Startscreen ausblenden und Canvas erst beim Start sichtbar machen.
   document.getElementById("startScreen").classList.add("d-none");
   canvas.classList.remove("d-none");
   document.getElementById("gameControls").classList.remove("d-none");
   updateSoundIcon();
 
-  // Level wird erst hier erstellt, damit Chicken vorher nicht loslaufen.
   initLevel();
   world = new World(canvas, keyboard);
   world.muted = !soundOn;
@@ -122,10 +123,6 @@ function updateSoundIcon() {
   }
 }
 
-/**
- * Beendet das laufende Spiel (inkl. aller Intervalle und des
- * requestAnimationFrame-Loops) und kehrt zum Startbildschirm zurück.
- */
 function backToMenu() {
   playSound("click");
   stopBackgroundMusic();
