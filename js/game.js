@@ -3,11 +3,13 @@ let world;
 let keyboard = new Keyboard();
 let soundOn = true;
 let sounds = {};
+let highscore = 0;
 
 function init() {
   canvas = document.getElementById("canvas");
   createSounds();
   updateSoundIcon();
+  loadHighscore();
 }
 
 function createSounds() {
@@ -72,14 +74,81 @@ function stopWalkSound() {
   sounds.walk.currentTime = 0;
 }
 
+/**
+ * Liest den gespeicherten Highscore aus dem localStorage
+ * (oder 0, falls noch nie gespeichert) und zeigt ihn im Startbildschirm an.
+ */
+function loadHighscore() {
+  const saved = localStorage.getItem("elPolloLocoHighscore");
+  highscore = saved ? parseInt(saved, 10) : 0;
+  updateHighscoreDisplay();
+}
+
+/**
+ * Vergleicht die übergebenen Punkte mit dem aktuellen Highscore.
+ * Ist der neue Wert höher, wird er gespeichert und angezeigt.
+ * @param {number} score - die erreichten Punkte der aktuellen Runde
+ */
+function saveHighscoreIfNeeded(score) {
+  if (score > highscore) {
+    highscore = score;
+    localStorage.setItem("elPolloLocoHighscore", highscore);
+  }
+  updateHighscoreDisplay();
+}
+
+function updateHighscoreDisplay() {
+  const highscoreElement = document.getElementById("highscoreDisplay");
+  if (highscoreElement) {
+    highscoreElement.textContent = "Highscore: " + highscore;
+  }
+}
+
+/**
+ * Blendet den "Nochmal spielen"-Button ein, der im Winscreen angezeigt wird.
+ */
+function showPlayAgainButton() {
+  const winScreenActions = document.getElementById("winScreenActions");
+  if (winScreenActions) {
+    winScreenActions.classList.remove("d-none");
+  }
+}
+
+/**
+ * Blendet den "Nochmal spielen"-Button wieder aus.
+ */
+function hidePlayAgainButton() {
+  const winScreenActions = document.getElementById("winScreenActions");
+  if (winScreenActions) {
+    winScreenActions.classList.add("d-none");
+  }
+}
+
+/**
+ * Wird vom "Nochmal spielen"-Button im Winscreen aufgerufen.
+ * Macht genau dasselbe wie der Start-Button im Startbildschirm.
+ */
+function playAgain() {
+  hidePlayAgainButton();
+  startGame();
+}
+
 function startGame() {
   playSound("click");
 
+  // Falls noch eine alte Welt läuft (z.B. beim "Nochmal spielen"-Button),
+  // muss diese zuerst gestoppt werden, damit sich nichts doppelt.
+  if (world) {
+    world.stop();
+  }
+
+  // Startscreen ausblenden und Canvas erst beim Start sichtbar machen.
   document.getElementById("startScreen").classList.add("d-none");
   canvas.classList.remove("d-none");
   document.getElementById("gameControls").classList.remove("d-none");
   updateSoundIcon();
 
+  // Level wird erst hier erstellt, damit Chicken vorher nicht loslaufen.
   initLevel();
   world = new World(canvas, keyboard);
   world.muted = !soundOn;
@@ -123,10 +192,15 @@ function updateSoundIcon() {
   }
 }
 
+/**
+ * Beendet das laufende Spiel (inkl. aller Intervalle und des
+ * requestAnimationFrame-Loops) und kehrt zum Startbildschirm zurück.
+ */
 function backToMenu() {
   playSound("click");
   stopBackgroundMusic();
   stopWalkSound();
+  hidePlayAgainButton();
 
   if (world) {
     world.stop();
@@ -136,6 +210,7 @@ function backToMenu() {
   canvas.classList.add("d-none");
   document.getElementById("gameControls").classList.add("d-none");
   document.getElementById("startScreen").classList.remove("d-none");
+  updateHighscoreDisplay();
 }
 
 function showGameInfo() {

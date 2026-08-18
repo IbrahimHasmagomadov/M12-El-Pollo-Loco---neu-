@@ -17,13 +17,18 @@ class World {
   bottleCounterImage = new Image();
   coinCounterImage = new Image();
   winScreenImage = new Image();
-  debugZoom = 1;
+  debugZoom = 1; //tetweise
   gameWon = false;
   muted = false;
   running = true;
   intervalIds = [];
   animationFrameId = null;
   characterDeathSoundPlayed = false;
+  score = 0;
+  pointsPerCoin = 10;
+  pointsPerChicken = 15;
+  pointsPerSmallChicken = 20;
+  pointsPerEndbossDefeat = 200;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -195,6 +200,7 @@ class World {
         endboss.hit(20);
         playSound("stompedChicken");
         endboss.hasHitCactus = true;
+        // Start return phase: boss goes back to the right instead of chasing the character
         endboss.isReturningAfterCactus = true;
         this.endbossStatusbar.setPercentage(endboss.energy);
       }
@@ -207,9 +213,12 @@ class World {
     });
 
     if (endboss && endboss.deadAnimationPlayed) {
-      if (!this.winSoundPlayed) { 
+      if (!this.winSoundPlayed) {
+        this.score += this.pointsPerEndbossDefeat;
         playSound("pepeWin");
         this.winSoundPlayed = true;
+        saveHighscoreIfNeeded(this.score);
+        showPlayAgainButton();
       }
       this.gameWon = true;
     }
@@ -294,6 +303,7 @@ class World {
 
     if (object instanceof Coin) {
       this.collectedCoins++;
+      this.score += this.pointsPerCoin;
       playSound("coinPickup");
       this.coinStatusbar.setPercentage(this.collectedCoins * 10);
       return true;
@@ -359,12 +369,26 @@ class World {
   killChickenByJump(chicken) {
     chicken.kill();
     playSound("stompedChicken");
+    this.addChickenPoints(chicken);
     this.character.speedY = 20;
 
     setTimeout(() => {
       let index = this.level.enemies.indexOf(chicken);
       this.level.enemies.splice(index, 1);
     }, 1000);
+  }
+
+  /**
+   * Vergibt Punkte für ein besiegtes Chicken. Kleine Chicken geben
+   * mehr Punkte als normale, weil sie schwerer zu treffen sind.
+   * @param {Chicken|SmallChicken} chicken
+   */
+  addChickenPoints(chicken) {
+    if (chicken instanceof SmallChicken) {
+      this.score += this.pointsPerSmallChicken;
+    } else {
+      this.score += this.pointsPerChicken;
+    }
   }
 
   hitCharacter() {
@@ -379,6 +403,7 @@ class World {
       playSound("characterDeath");
       stopWalkSound();
       this.characterDeathSoundPlayed = true;
+      saveHighscoreIfNeeded(this.score);
       return;
     }
 
@@ -390,6 +415,7 @@ class World {
     bottle.bottleSplash();
     playSound("stompedChicken");
     playSound("bottleSmash");
+    this.addChickenPoints(chicken);
 
     setTimeout(() => {
       let index = this.level.enemies.indexOf(chicken);
@@ -439,8 +465,8 @@ class World {
 
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    this.ctx.save();
-    this.ctx.scale(this.debugZoom, this.debugZoom);
+    this.ctx.save(); //testweise
+    this.ctx.scale(this.debugZoom, this.debugZoom); //testweise
 
     this.ctx.translate(this.camera_x, 0);
     this.addObjectsToMap(this.level.backgroundObjects);
@@ -452,7 +478,7 @@ class World {
     this.addObjectsToMap(this.throwableObjects);
     this.ctx.translate(-this.camera_x, 0);
 
-    this.ctx.restore();
+    this.ctx.restore(); //testweise
 
     this.addToMap(this.statusbar);
     this.drawCollectableCounters();
@@ -483,18 +509,38 @@ class World {
   }
 
   drawWinScreen() {
+    // Dunkler Overlay über dem ganzen Spiel, damit der Winscreen besser lesbar ist.
     this.ctx.save();
-    this.ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+    this.ctx.fillStyle = "rgba(0, 0, 0, 0.55)";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.restore();
 
-
-    const boxWidth = 550;
-    const boxHeight = 300;
+    // Das Winscreen-Bild selbst nur noch in einer kleineren Box in der Mitte zeigen.
+    const boxWidth = 500;
+    const boxHeight = 260;
     const boxX = (this.canvas.width - boxWidth) / 2;
     const boxY = (this.canvas.height - boxHeight) / 2;
 
     this.ctx.drawImage(this.winScreenImage, boxX, boxY, boxWidth, boxHeight);
+
+    this.drawWinScreenScore(boxX, boxY, boxWidth, boxHeight);
+  }
+
+  /**
+   * Zeigt den aktuellen Punktestand und den gespeicherten Highscore
+   * unterhalb des Winscreen-Bildes an. "highscore" kommt aus game.js.
+   */
+  drawWinScreenScore(boxX, boxY, boxWidth, boxHeight) {
+    this.ctx.save();
+    this.ctx.font = "bold 22px Comic Sans MS";
+    this.ctx.fillStyle = "white";
+    this.ctx.textAlign = "center";
+
+    const centerX = boxX + boxWidth / 2;
+    this.ctx.fillText("Punkte: " + this.score, centerX, boxY + boxHeight + 0);
+    this.ctx.fillText("Highscore: " + highscore, centerX, boxY + boxHeight + 32);
+
+    this.ctx.restore();
   }
 
   drawCollectableCounters() {
@@ -506,6 +552,14 @@ class World {
 
     this.ctx.drawImage(this.coinCounterImage, 95, 45, 80, 80);
     this.ctx.fillText(this.collectedCoins, 165, 95);
+
+    this.drawScore();
+  }
+
+  drawScore() {
+    this.ctx.font = "bold 22px Comic Sans MS";
+    this.ctx.fillStyle = "white";
+    this.ctx.fillText("Punkte: " + this.score, 30, 145);
   }
 
   addObjectsToMap(objects) {

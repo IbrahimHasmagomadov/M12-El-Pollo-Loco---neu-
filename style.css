@@ -79,6 +79,44 @@ canvas {
   pointer-events: none;
 }
 
+.highscore-display {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 22px;
+  font-weight: bold;
+  font-family: fantasy;
+  color: white;
+  text-shadow: 2px 2px 0 black;
+  background-color: rgba(0, 0, 0, 0.45);
+  padding: 6px 18px;
+  border-radius: 10px;
+  z-index: 5;
+}
+
+.win-screen-actions {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+}
+
+.play-again-btn {
+  padding: 10px 24px;
+  font-size: 18px;
+  font-weight: bold;
+  border: 2px solid black;
+  border-radius: 8px;
+  background-color: #ffcc00;
+  cursor: pointer;
+}
+
+.play-again-btn:hover {
+  background-color: #ffb300;
+}
+
 @media only screen and (max-width: 720px) {
   canvas {
     width: 100%;

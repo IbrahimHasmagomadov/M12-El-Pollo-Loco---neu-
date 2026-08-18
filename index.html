@@ -43,6 +43,8 @@
         alt="El Pollo Loco Startscreen"
       />
 
+      <div id="highscoreDisplay" class="highscore-display">Highscore: 0</div>
+
       <div class="start-screen-buttons">
         <button onclick="startGame()">Start</button>
 
@@ -123,6 +125,12 @@
             src="img/icons/sound/sound-on.png"
             alt="Sound an"
           />
+        </button>
+      </div>
+
+      <div id="winScreenActions" class="win-screen-actions d-none">
+        <button class="play-again-btn" onclick="playAgain()">
+          Nochmal spielen
         </button>
       </div>
     </div>
