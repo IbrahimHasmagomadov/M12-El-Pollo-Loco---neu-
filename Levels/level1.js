@@ -10,17 +10,19 @@ function createBottles(amount) {
   return bottles;
 }
 
+
 function createChickens(amount) {
   let chickens = [];
   let x = 500;
 
   for (let i = 0; i < amount; i++) {
-    x += 20 + Math.random() * 20;
+    x += 220 + Math.random() * 200;
     chickens.push(new Chicken(x));
   }
 
   return chickens;
 }
+
 
 function createSmallChickens(amount) {
   let chickens = [];
@@ -46,51 +48,55 @@ function createCoins(amount) {
   return coins;
 }
 
-const level1 = new Level(
-  [...createChickens(0), ...createSmallChickens(0), new Endboss()],
-  [...createBottles(20), ...createCoins(100)],
+let level1;
 
-  [
-    new Stone(3050), //3050
-    new Cactus(970),
-    new Cactus(1750),
-    new Stone(4470, "big"), 
-    new Cactus(3220, "big"), //3200 + 20
-    new WarningSign(3420),
-  ],
-  [new Cloud()],
-  [
-    new BackgroundObject("img/5_background/layers/air.png", -719),
-    new BackgroundObject("img/5_background/layers/3_third_layer/2.png", -719),
-    new BackgroundObject("img/5_background/layers/2_second_layer/2.png", -719),
-    new BackgroundObject("img/5_background/layers/1_first_layer/2.png", -719),
-    new BackgroundObject("img/5_background/layers/air.png", 0),
-    new BackgroundObject("img/5_background/layers/3_third_layer/1.png", 0),
-    new BackgroundObject("img/5_background/layers/2_second_layer/1.png", 0),
-    new BackgroundObject("img/5_background/layers/1_first_layer/1.png", 0),
-    new BackgroundObject("img/5_background/layers/air.png", 719),
-    new BackgroundObject("img/5_background/layers/3_third_layer/2.png", 719),
-    new BackgroundObject("img/5_background/layers/2_second_layer/2.png", 719),
-    new BackgroundObject("img/5_background/layers/1_first_layer/2.png", 719),
-    new BackgroundObject("img/5_background/layers/air.png", 719 * 2),
-    new BackgroundObject("img/5_background/layers/3_third_layer/1.png",719 * 2),
-    new BackgroundObject("img/5_background/layers/2_second_layer/1.png",719 * 2),
-    new BackgroundObject("img/5_background/layers/1_first_layer/1.png",719 * 2),
-    new BackgroundObject("img/5_background/layers/air.png", 719 * 3),
-    new BackgroundObject("img/5_background/layers/3_third_layer/2.png",719 * 3),
-    new BackgroundObject("img/5_background/layers/2_second_layer/2.png",719 * 3),
-    new BackgroundObject("img/5_background/layers/1_first_layer/2.png",719 * 3),
-    new BackgroundObject("img/5_background/layers/air.png", 719 * 4),
-    new BackgroundObject("img/5_background/layers/3_third_layer/1.png",719 * 4),
-    new BackgroundObject("img/5_background/layers/2_second_layer/1.png",719 * 4),
-    new BackgroundObject("img/5_background/layers/1_first_layer/1.png",719 * 4),
-    new BackgroundObject("img/5_background/layers/air.png", 719 * 5),
-    new BackgroundObject("img/5_background/layers/3_third_layer/2.png",719 * 5),
-    new BackgroundObject("img/5_background/layers/2_second_layer/2.png",719 * 5),
-    new BackgroundObject("img/5_background/layers/1_first_layer/2.png",719 * 5),
-    new BackgroundObject("img/5_background/layers/air.png", 719 * 6),
-    new BackgroundObject("img/5_background/layers/3_third_layer/1.png",719 * 6),
-    new BackgroundObject("img/5_background/layers/2_second_layer/1.png",719 * 6),
-    new BackgroundObject("img/5_background/layers/1_first_layer/1.png",719 * 6),
-  ],
-);
+function initLevel() {
+  level1 = new Level(
+    [...createChickens(10), ...createSmallChickens(5), new Endboss()],
+    [...createBottles(20), ...createCoins(100)],
+
+    [
+      new Stone(3050),
+      new Cactus(970),
+      new Cactus(1750),
+      new Stone(4470, "big"),
+      new Cactus(3220, "big"),
+      new WarningSign(3420),
+    ],
+    [new Cloud()],
+    [
+      new BackgroundObject("img/5_background/layers/air.png", -719),
+      new BackgroundObject("img/5_background/layers/3_third_layer/2.png", -719),
+      new BackgroundObject("img/5_background/layers/2_second_layer/2.png", -719),
+      new BackgroundObject("img/5_background/layers/1_first_layer/2.png", -719),
+      new BackgroundObject("img/5_background/layers/air.png", 0),
+      new BackgroundObject("img/5_background/layers/3_third_layer/1.png", 0),
+      new BackgroundObject("img/5_background/layers/2_second_layer/1.png", 0),
+      new BackgroundObject("img/5_background/layers/1_first_layer/1.png", 0),
+      new BackgroundObject("img/5_background/layers/air.png", 719),
+      new BackgroundObject("img/5_background/layers/3_third_layer/2.png", 719),
+      new BackgroundObject("img/5_background/layers/2_second_layer/2.png", 719),
+      new BackgroundObject("img/5_background/layers/1_first_layer/2.png", 719),
+      new BackgroundObject("img/5_background/layers/air.png", 719 * 2),
+      new BackgroundObject("img/5_background/layers/3_third_layer/1.png", 719 * 2),
+      new BackgroundObject("img/5_background/layers/2_second_layer/1.png", 719 * 2),
+      new BackgroundObject("img/5_background/layers/1_first_layer/1.png", 719 * 2),
+      new BackgroundObject("img/5_background/layers/air.png", 719 * 3),
+      new BackgroundObject("img/5_background/layers/3_third_layer/2.png", 719 * 3),
+      new BackgroundObject("img/5_background/layers/2_second_layer/2.png", 719 * 3),
+      new BackgroundObject("img/5_background/layers/1_first_layer/2.png", 719 * 3),
+      new BackgroundObject("img/5_background/layers/air.png", 719 * 4),
+      new BackgroundObject("img/5_background/layers/3_third_layer/1.png", 719 * 4),
+      new BackgroundObject("img/5_background/layers/2_second_layer/1.png", 719 * 4),
+      new BackgroundObject("img/5_background/layers/1_first_layer/1.png", 719 * 4),
+      new BackgroundObject("img/5_background/layers/air.png", 719 * 5),
+      new BackgroundObject("img/5_background/layers/3_third_layer/2.png", 719 * 5),
+      new BackgroundObject("img/5_background/layers/2_second_layer/2.png", 719 * 5),
+      new BackgroundObject("img/5_background/layers/1_first_layer/2.png", 719 * 5),
+      new BackgroundObject("img/5_background/layers/air.png", 719 * 6),
+      new BackgroundObject("img/5_background/layers/3_third_layer/1.png", 719 * 6),
+      new BackgroundObject("img/5_background/layers/2_second_layer/1.png", 719 * 6),
+      new BackgroundObject("img/5_background/layers/1_first_layer/1.png", 719 * 6),
+    ],
+  );
+}

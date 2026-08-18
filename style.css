@@ -1,24 +1,168 @@
-body{
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-image: url(img/9_intro_outro_screens/desert.png);
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-image: url(img/9_intro_outro_screens/desert.png);
 }
 
-canvas{
-    background-color: rgb(62, 62, 62);
-    display: block;
+canvas {
+  background-color: rgb(62, 62, 62);
+  display: block;
 }
 
 @media only screen and (max-width: 720px) {
-    canvas {
-        width: 100%;
-    }
+  canvas {
+    width: 100%;
+  }
 }
 
 @media only screen and (max-width: 480px) {
-    canvas {
-        height: 100vh;
-    }
+  canvas {
+    height: 100vh;
+  }
+}
+
+/* Versteckt Bereiche, die gerade nicht angezeigt werden sollen. */
+.d-none {
+  display: none;
+}
+
+/* STARTSCREEN: gleicher Bereich wie das Canvas, aber als HTML statt Canvas-Button. */
+.start-screen {
+  position: relative;
+  width: 720px;
+  height: 480px;
+}
+
+.start-screen-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Buttons liegen über dem Startscreen-Bild. */
+.start-screen-buttons {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 35px;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+
+.start-screen-buttons button {
+  padding: 12px 28px;
+  font-size: 22px;
+  font-weight: bold;
+  border: 2px solid black;
+  border-radius: 10px;
+  background-color: #ffcc00;
+  cursor: pointer;
+}
+
+.start-screen-buttons button:hover {
+  background-color: #ffb300;
+}
+
+/* INFO: How-to-play-Fenster liegt über dem Startscreen. */
+.game-info {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 720px;
+  height: 480px;
+  background-image: url("img/9_intro_outro_screens/start/startscreen_1.png");
+  background-size: cover;
+  background-position: center;
+  z-index: 20;
+  text-align: center;
+}
+
+.game-info h2 {
+  margin-top: 20px;
+  margin-bottom: 25px;
+  font-size: 44px;
+  font-family: fantasy;
+  letter-spacing: 3px;
+  color: black;
+  text-shadow: 2px 2px 0 white;
+}
+
+.game-info-box {
+  width: 400px;
+  margin: 0 auto;
+  padding: 16px 36px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 18px;
+}
+
+.control-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 28px;
+  font-family: fantasy;
+  font-weight: bold;
+  color: black;
+}
+
+.control-row:last-child {
+  margin-bottom: 0;
+}
+
+.key-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.space-key-icon {
+  width: 95px;
+  height: 45px;
+  object-fit: contain;
+}
+
+.key-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.or-text {
+  font-size: 18px;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+}
+
+.info-close-btn {
+  margin-top: 22px;
+  padding: 10px 32px;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  border: 3px solid black;
+  border-radius: 8px;
+  background-color: #ffcc33;
+  color: black;
+}
+
+.info-close-btn:hover {
+  background-color: #ffb300;
+}
+
+@media only screen and (max-width: 720px) {
+  .start-screen,
+  .game-info {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .start-screen,
+  .game-info {
+    height: 100vh;
+  }
 }

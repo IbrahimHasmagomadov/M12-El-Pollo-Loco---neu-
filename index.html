@@ -6,6 +6,7 @@
     <title>El Pollo Loco</title>
     <link rel="icon" href="img/favicon.png" type="image/png" />
     <link rel="stylesheet" href="style.css" />
+
     <script src="models/drawable-object.class.js"></script>
     <script src="models/warning-sign.class.js"></script>
     <script src="models/obstacle.class.js"></script>
@@ -32,10 +33,73 @@
     <script src="Levels/level1.js"></script>
     <script src="js/game.js"></script>
   </head>
+
   <body>
     <h1>El Pollo Loco</h1>
+    <div id="startScreen" class="start-screen">
+      <img
+        class="start-screen-img"
+        src="img/9_intro_outro_screens/start/startscreen_1.png"
+        alt="El Pollo Loco Startscreen"
+      />
 
-    <canvas id="canvas" width="720" height="480"> </canvas>
+      <div class="start-screen-buttons">
+        <button onclick="startGame()">Start</button>
+
+        <button onclick="showGameInfo()">Info</button>
+      </div>
+
+      <div id="gameInfo" class="game-info d-none">
+        <h2>HOW TO PLAY</h2>
+
+        <div class="game-info-box">
+          <div class="control-row">
+            <span>LEFT</span>
+            <img
+              src="img/icons/keys/left-key.png"
+              class="key-icon"
+              alt="left key"
+            />
+          </div>
+
+          <div class="control-row">
+            <span>RIGHT</span>
+            <img
+              src="img/icons/keys/right-key.png"
+              class="key-icon"
+              alt="right key"
+            />
+          </div>
+
+          <div class="control-row">
+            <span>JUMP</span>
+            <div class="key-group">
+              <img
+                src="img/icons/keys/space-key.png"
+                class="space-key-icon"
+                alt="space key"
+              />
+              <span class="or-text">or</span>
+
+              <img
+                src="img/icons/keys/up-key.png"
+                class="key-icon"
+                alt="up key"
+              />
+            </div>
+          </div>
+
+          <div class="control-row">
+            <span>THROW BOTTLE</span>
+            <img src="img/icons/keys/d-key.png" class="key-icon" alt="d key" />
+          </div>
+        </div>
+
+        <button class="info-close-btn" onclick="hideGameInfo()">BACK</button>
+      </div>
+    </div>
+
+    <canvas id="canvas" class="d-none" width="720" height="480"></canvas>
 
     <script>
       init();
