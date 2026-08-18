@@ -48,6 +48,7 @@
 
         <button onclick="showGameInfo()">Info</button>
       </div>
+      
 
       <div id="gameInfo" class="game-info d-none">
         <h2>HOW TO PLAY</h2>
@@ -99,7 +100,33 @@
       </div>
     </div>
 
-    <canvas id="canvas" class="d-none" width="720" height="480"></canvas>
+    <div class="canvas-wrapper">
+      <canvas id="canvas" class="d-none" width="720" height="480"></canvas>
+
+      <div id="gameControls" class="game-controls d-none">
+        <button
+          id="backToMenuBtn"
+          class="back-to-menu-btn"
+          onclick="backToMenu()"
+        >
+          &#8592; Menu
+        </button>
+
+        <button
+          id="soundToggleBtn"
+          class="icon-btn"
+          onclick="toggleSound()"
+          title="Sound ein-/ausschalten"
+        >
+          <img
+            id="soundIcon"
+            src="img/icons/sound/sound-on.png"
+            alt="Sound an"
+          />
+        </button>
+      </div>
+    </div>
+    
 
     <script>
       init();

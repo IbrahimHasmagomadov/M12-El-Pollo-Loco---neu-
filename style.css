@@ -1,9 +1,24 @@
 body {
-  margin: 0;
+    margin: 0;
+  min-height: 100%;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-image: url(img/9_intro_outro_screens/desert.png);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Hintergrundbild liegt fest über dem ganzen Bildschirm */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("img/9_intro_outro_screens/desert.png");
+  background-size: cover;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  z-index: -1;
 }
 
 canvas {
@@ -11,8 +26,64 @@ canvas {
   display: block;
 }
 
+.canvas-wrapper {
+  position: relative;
+  width: 720px;
+}
+
+.game-controls {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 10;
+}
+
+.back-to-menu-btn {
+  padding: 8px 18px;
+  font-size: 16px;
+  font-weight: bold;
+  border: 2px solid black;
+  border-radius: 8px;
+  background-color: #ffcc00;
+  cursor: pointer;
+}
+
+.back-to-menu-btn:hover {
+  background-color: #ffb300;
+}
+
+.icon-btn {
+  background-color: rgba(255, 255, 255, 0.75);
+  border: 2px solid black;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn:hover {
+  background-color: rgba(255, 204, 0, 0.85);
+}
+
+.icon-btn img {
+  width: 28px;
+  height: 28px;
+  display: block;
+  pointer-events: none;
+}
+
 @media only screen and (max-width: 720px) {
   canvas {
+    width: 100%;
+  }
+
+  .canvas-wrapper {
     width: 100%;
   }
 }
@@ -23,12 +94,10 @@ canvas {
   }
 }
 
-/* Versteckt Bereiche, die gerade nicht angezeigt werden sollen. */
 .d-none {
   display: none;
 }
 
-/* STARTSCREEN: gleicher Bereich wie das Canvas, aber als HTML statt Canvas-Button. */
 .start-screen {
   position: relative;
   width: 720px;
@@ -41,7 +110,6 @@ canvas {
   display: block;
 }
 
-/* Buttons liegen über dem Startscreen-Bild. */
 .start-screen-buttons {
   position: absolute;
   left: 0;
@@ -66,7 +134,6 @@ canvas {
   background-color: #ffb300;
 }
 
-/* INFO: How-to-play-Fenster liegt über dem Startscreen. */
 .game-info {
   position: absolute;
   top: 0;

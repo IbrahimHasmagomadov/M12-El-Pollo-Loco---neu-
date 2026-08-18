@@ -89,55 +89,69 @@ class Character extends MovableObject {
     setInterval(() => this.handleAnimation(), 1000 / 10);
   }
 
-handleMovement() {
-  if (this.isDead()) return;
-
-  if (this.isKnockback) {
-    this.x += this.knockbackDirection * 4;
-    this.updateCamera();
-
-    if (new Date().getTime() > this.knockbackEnd) {
-      this.isKnockback = false;
+  handleMovement() {
+    if (this.isDead()) {
+      stopWalkSound();
+      return;
     }
 
-    return;
-  }
+    let isWalking = false;
 
-  if (
-    this.world.keyboard.RIGHT &&
-    this.x < this.world.level.level_end_x &&
-    !this.world.isObstacleBlocking("right")
-  ) {
-    this.moveRight();
-    this.otherDirection = false;
-    this.idleStartTime = new Date().getTime();
-  }
+    if (this.isKnockback) {
+      this.x += this.knockbackDirection * 4;
+      this.updateCamera();
 
-  if (
-    this.world.keyboard.LEFT &&
-    this.x > -250 &&
-    !this.world.isObstacleBlocking("left")
-  ) {
-    this.moveLeft();
-    this.otherDirection = true;
-    this.idleStartTime = new Date().getTime();
-  }
+      if (new Date().getTime() > this.knockbackEnd) {
+        this.isKnockback = false;
+      }
 
-  if (
-    (this.world.keyboard.SPACE || this.world.keyboard.UP) &&
-    !this.isAboveGround()
-  ) {
-    this.jump();
-    this.idleStartTime = new Date().getTime();
-  }
+      return;
+    }
 
-  if (this.wasAboveGround && !this.isAboveGround()) {
-    this.landingAnimationUntil = new Date().getTime() + 250;
-  }
+    if (
+      this.world.keyboard.RIGHT &&
+      this.x < this.world.level.level_end_x &&
+      !this.world.isObstacleBlocking("right")
+    ) {
+      this.moveRight();
+      this.otherDirection = false;
+      this.idleStartTime = new Date().getTime();
+      isWalking = true;
+    }
 
-  this.wasAboveGround = this.isAboveGround();
-  this.updateCamera();
-}
+    if (
+      this.world.keyboard.LEFT &&
+      this.x > -250 &&
+      !this.world.isObstacleBlocking("left")
+    ) {
+      this.moveLeft();
+      this.otherDirection = true;
+      this.idleStartTime = new Date().getTime();
+      isWalking = true;
+    }
+
+    if (
+      (this.world.keyboard.SPACE || this.world.keyboard.UP) &&
+      !this.isAboveGround()
+    ) {
+      this.jump();
+      playSound("jump");
+      this.idleStartTime = new Date().getTime();
+    }
+
+    if (this.wasAboveGround && !this.isAboveGround()) {
+      this.landingAnimationUntil = new Date().getTime() + 250;
+      playSound("land");
+    }
+
+    this.wasAboveGround = this.isAboveGround();
+    if (isWalking && !this.isAboveGround()) {
+      startWalkSound();
+    } else {
+      stopWalkSound();
+    }
+    this.updateCamera();
+  }
 
   updateCamera() {
     if (this.world.showEndbossStatusbar) {

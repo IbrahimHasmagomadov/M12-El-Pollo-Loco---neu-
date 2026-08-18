@@ -19,6 +19,11 @@ class World {
   winScreenImage = new Image();
   debugZoom = 1; //tetweise
   gameWon = false;
+  muted = false;
+  running = true;
+  intervalIds = [];
+  animationFrameId = null;
+  characterDeathSoundPlayed = false;
 
   constructor(canvas, keyboard) {
     this.ctx = canvas.getContext("2d");
@@ -43,7 +48,7 @@ class World {
   }
 
   checkCollisions() {
-    setInterval(() => {
+    const intervalId = setInterval(() => {
       this.checkCharacterEnemyCollision();
       this.checkBottleChickenCollision();
       this.checkCollectableObjectCollision();
@@ -57,6 +62,7 @@ class World {
       this.checkStoneTopCollision();
       this.resetGroundYIfNotOnStone();
     }, 1000 / 30);
+    this.intervalIds.push(intervalId);
   }
 
   checkCharacterEnemyCollision() {
@@ -106,6 +112,8 @@ class World {
         ) {
           enemy.hit(10);
           bottle.bottleSplash();
+          playSound("stompedChicken");
+          playSound("bottleSmash");
           this.endbossStatusbar.setPercentage(enemy.energy);
         }
       });
@@ -118,9 +126,10 @@ class World {
     if (!endboss) {
       return;
     }
-    if (this.character.x > 3400) {
+    if (this.character.x > 3400 && !endboss.isActive) {
       endboss.activate();
       this.showEndbossStatusbar = true;
+      playSound("bossFirst");
     }
   }
 
@@ -162,8 +171,7 @@ class World {
       ) {
         const direction = this.character.x < obstacle.x ? -1 : 1;
 
-        this.character.hit();
-        this.statusbar.setPercentage(this.character.energy);
+        this.hitCharacter();
         this.character.startKnockback(direction);
       }
     });
@@ -181,6 +189,7 @@ class World {
     this.level.obstacles.forEach((obstacle) => {
       if (obstacle instanceof Cactus && endboss.isColliding(obstacle)) {
         endboss.hit(20);
+        playSound("stompedChicken");
         endboss.hasHitCactus = true;
         // Start return phase: boss goes back to the right instead of chasing the character
         endboss.isReturningAfterCactus = true;
@@ -268,6 +277,7 @@ class World {
     if (object instanceof Bottle) {
       if (this.collectedBottles < 10) {
         this.collectedBottles++;
+        playSound("bottlePickup");
         this.bottleStatusbar.setPercentage(this.collectedBottles * 10);
         return true;
       }
@@ -277,6 +287,7 @@ class World {
 
     if (object instanceof Coin) {
       this.collectedCoins++;
+      playSound("coinPickup");
       this.coinStatusbar.setPercentage(this.collectedCoins * 10);
       return true;
     }
@@ -338,6 +349,7 @@ class World {
 
   killChickenByJump(chicken) {
     chicken.kill();
+    playSound("stompedChicken");
     this.character.speedY = 20;
 
     setTimeout(() => {
@@ -347,13 +359,28 @@ class World {
   }
 
   hitCharacter() {
+    if (this.character.isDead()) {
+      return;
+    }
+
     this.character.hit();
     this.statusbar.setPercentage(this.character.energy);
+
+    if (this.character.isDead() && !this.characterDeathSoundPlayed) {
+      playSound("characterDeath");
+      stopWalkSound();
+      this.characterDeathSoundPlayed = true;
+      return;
+    }
+
+    playSound("hurt");
   }
 
   killChickenWithBottle(chicken, bottle) {
     chicken.kill();
     bottle.bottleSplash();
+    playSound("stompedChicken");
+    playSound("bottleSmash");
 
     setTimeout(() => {
       let index = this.level.enemies.indexOf(chicken);
@@ -362,7 +389,7 @@ class World {
   }
 
   checkThrowObjects() {
-    setInterval(() => {
+    const intervalId = setInterval(() => {
       if (
         this.keyboard.D &&
         this.canThrow &&
@@ -371,6 +398,7 @@ class World {
         !this.character.isThrowing
       ) {
         this.character.throw();
+        playSound("bottleThrow");
         setTimeout(() => {
           let bottle = new ThrowableObject(
             this.character.otherDirection
@@ -389,9 +417,14 @@ class World {
         }, 900);
       }
     }, 100);
+    this.intervalIds.push(intervalId);
   }
 
   draw() {
+    if (!this.running) {
+      return;
+    }
+
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.ctx.save(); //testweise
@@ -420,13 +453,24 @@ class World {
     }
 
     let self = this;
-    requestAnimationFrame(function () {
+    this.animationFrameId = requestAnimationFrame(function () {
       self.draw();
     });
   }
 
+  stop() {
+    this.running = false;
+
+    if (this.animationFrameId !== null) {
+      cancelAnimationFrame(this.animationFrameId);
+      this.animationFrameId = null;
+    }
+
+    this.intervalIds.forEach((id) => clearInterval(id));
+    this.intervalIds = [];
+  }
+
   drawWinScreen() {
-    // Draw the win screen image over the entire canvas
     this.ctx.drawImage(
       this.winScreenImage,
       0,
