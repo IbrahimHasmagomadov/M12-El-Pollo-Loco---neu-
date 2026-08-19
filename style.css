@@ -1,5 +1,5 @@
 body {
-    margin: 0;
+  margin: 0;
   min-height: 100%;
   min-height: 100dvh;
   display: flex;
@@ -23,31 +23,34 @@ body::before {
 canvas {
   background-color: rgb(62, 62, 62);
   display: block;
+  width: 100%;
+  height: auto;
 }
 
 .canvas-wrapper {
   position: relative;
   width: 720px;
+  max-width: 100%;
 }
 
 .game-controls {
   position: absolute;
-  top: 10px;
+  top: clamp(5px, 1.5vw, 10px);
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 16px;
+  gap: clamp(8px, 2vw, 16px);
   z-index: 10;
 }
 
 .back-to-menu-btn {
-  padding: 8px 18px;
-  font-size: 16px;
+  padding: clamp(5px, 1.2vw, 8px) clamp(10px, 2.5vw, 18px);
+  font-size: clamp(11px, 2.2vw, 16px);
   font-weight: bold;
   border: 2px solid black;
-  border-radius: 8px;
+  border-radius: clamp(5px, 1vw, 8px);
   background-color: #ffcc00;
   cursor: pointer;
 }
@@ -59,9 +62,9 @@ canvas {
 .icon-btn {
   background-color: rgba(255, 255, 255, 0.75);
   border: 2px solid black;
-  border-radius: 8px;
+  border-radius: clamp(5px, 1vw, 8px);
   cursor: pointer;
-  padding: 6px;
+  padding: clamp(4px, 1vw, 6px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -72,24 +75,23 @@ canvas {
 }
 
 .icon-btn img {
-  width: 28px;
-  height: 28px;
+  width: clamp(18px, 4vw, 28px);
+  height: clamp(18px, 4vw, 28px);
   display: block;
   pointer-events: none;
 }
 
 .highscore-display {
   position: absolute;
-  top: 15px;
+  top: 3%;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 22px;
-  font-weight: bold;
+  font-size: clamp(14px, 3vw, 22px);
   font-family: fantasy;
   color: white;
   text-shadow: 2px 2px 0 black;
   background-color: rgba(0, 0, 0, 0.45);
-  padding: 6px 18px;
+  padding: clamp(4px, 1vw, 6px) clamp(10px, 2vw, 18px);
   border-radius: 10px;
   z-index: 5;
 }
@@ -116,22 +118,6 @@ canvas {
   background-color: #ffb300;
 }
 
-@media only screen and (max-width: 720px) {
-  canvas {
-    width: 100%;
-  }
-
-  .canvas-wrapper {
-    width: 100%;
-  }
-}
-
-@media only screen and (max-width: 480px) {
-  canvas {
-    height: 100vh;
-  }
-}
-
 .d-none {
   display: none;
 }
@@ -139,7 +125,8 @@ canvas {
 .start-screen {
   position: relative;
   width: 720px;
-  height: 480px;
+  max-width: 100%;
+  aspect-ratio: 3 / 2;
 }
 
 .start-screen-img {
@@ -152,15 +139,15 @@ canvas {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 35px;
+  bottom: 7%;
   display: flex;
   justify-content: center;
-  gap: 24px;
+  gap: clamp(10px, 3vw, 24px);
 }
 
 .start-screen-buttons button {
-  padding: 12px 28px;
-  font-size: 22px;
+  padding: clamp(7px, 1.5vw, 12px) clamp(14px, 4vw, 28px);
+  font-size: clamp(14px, 3vw, 22px);
   font-weight: bold;
   border: 2px solid black;
   border-radius: 10px;
@@ -176,8 +163,8 @@ canvas {
   position: absolute;
   top: 0;
   left: 0;
-  width: 720px;
-  height: 480px;
+  width: 100%;
+  height: 100%;
   background-image: url("img/9_intro_outro_screens/start/startscreen_1.png");
   background-size: cover;
   background-position: center;
@@ -186,19 +173,21 @@ canvas {
 }
 
 .game-info h2 {
-  margin-top: 20px;
-  margin-bottom: 25px;
-  font-size: 44px;
+  margin-top: clamp(10px, 3vw, 20px);
+  margin-bottom: clamp(12px, 3vw, 25px);
+  font-size: clamp(14px, 6vw, 44px);
   font-family: fantasy;
-  letter-spacing: 3px;
+  font-weight:lighter;
+  letter-spacing: clamp(1px, 0.5vw, 3px);
   color: black;
   text-shadow: 2px 2px 0 white;
 }
 
 .game-info-box {
-  width: 400px;
+  width: min(400px, 80%);
+  box-sizing: border-box;
   margin: 0 auto;
-  padding: 16px 36px;
+  padding: clamp(10px, 2vw, 16px) clamp(16px, 4vw, 36px);
   background-color: rgba(255, 255, 255, 0.7);
   border-radius: 18px;
 }
@@ -207,8 +196,8 @@ canvas {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  font-size: 28px;
+  margin-bottom: 0;
+  font-size: clamp(16px, 4vw, 28px);
   font-family: fantasy;
   font-weight: bold;
   color: black;
@@ -219,14 +208,14 @@ canvas {
 }
 
 .key-icon {
-  width: 48px;
-  height: 48px;
+  width: clamp(30px, 7vw, 48px);
+  height: clamp(30px, 7vw, 48px);
   object-fit: contain;
 }
 
 .space-key-icon {
-  width: 95px;
-  height: 45px;
+  width: clamp(60px, 14vw, 95px);
+  height: auto;
   object-fit: contain;
 }
 
@@ -237,15 +226,19 @@ canvas {
 }
 
 .or-text {
-  font-size: 18px;
+  font-size: clamp(12px, 2.5vw, 18px);
   font-family: Arial, sans-serif;
   font-weight: bold;
 }
 
 .info-close-btn {
-  margin-top: 22px;
-  padding: 10px 32px;
-  font-size: 22px;
+  position: absolute;
+  bottom: clamp(10px, 3vw, 22px);
+  left: 50%;
+  transform: translateX(-50%);
+
+  padding: clamp(7px, 1.5vw, 10px) clamp(18px, 4vw, 32px);
+  font-size: clamp(14px, 3vw, 22px);
   font-weight: bold;
   cursor: pointer;
   border: 3px solid black;
@@ -256,18 +249,4 @@ canvas {
 
 .info-close-btn:hover {
   background-color: #ffb300;
-}
-
-@media only screen and (max-width: 720px) {
-  .start-screen,
-  .game-info {
-    width: 100%;
-  }
-}
-
-@media only screen and (max-width: 480px) {
-  .start-screen,
-  .game-info {
-    height: 100vh;
-  }
 }

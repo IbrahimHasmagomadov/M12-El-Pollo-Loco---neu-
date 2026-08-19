@@ -24,6 +24,8 @@ class Character extends MovableObject {
   wasAboveGround = false;
   isThrowing = false;
   throwAnimationFrame = 0;
+  movementInterval = null;
+  animationInterval = null;
 
   IMAGE_RIP = "img/You won, you lost/RIP.png";
 
@@ -85,8 +87,20 @@ class Character extends MovableObject {
   }
 
   animate() {
-    setInterval(() => this.handleMovement(), 1000 / 60);
-    setInterval(() => this.handleAnimation(), 1000 / 10);
+    this.movementInterval = setInterval(() => this.handleMovement(), 1000 / 60);
+
+    this.animationInterval = setInterval(
+      () => this.handleAnimation(),
+      1000 / 10,
+    );
+  }
+
+  stop() {
+    clearInterval(this.movementInterval);
+    clearInterval(this.animationInterval);
+
+    this.movementInterval = null;
+    this.animationInterval = null;
   }
 
   handleMovement() {
