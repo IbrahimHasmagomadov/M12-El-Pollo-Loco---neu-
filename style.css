@@ -46,8 +46,8 @@ canvas {
 }
 
 .back-to-menu-btn {
-  padding: clamp(5px, 1.2vw, 8px) clamp(10px, 2.5vw, 18px);
-  font-size: clamp(11px, 2.2vw, 16px);
+  padding: clamp(1px, 1.2vw, 8px) clamp(5px, 2.5vw, 18px);
+  font-size: clamp(8px, 2.2vw, 16px);
   font-weight: bold;
   border: 2px solid black;
   border-radius: clamp(5px, 1vw, 8px);
@@ -60,18 +60,17 @@ canvas {
 }
 
 .icon-btn {
-  background-color: rgba(255, 255, 255, 0.75);
-  border: 2px solid black;
-  border-radius: clamp(5px, 1vw, 8px);
+  background: none;
+  border: none;
+  padding: 0;
   cursor: pointer;
-  padding: clamp(4px, 1vw, 6px);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.icon-btn:hover {
-  background-color: rgba(255, 204, 0, 0.85);
+.icon-btn:hover img {
+  filter: drop-shadow(10px 0 8px orange);
 }
 
 .icon-btn img {
@@ -98,18 +97,18 @@ canvas {
 
 .win-screen-actions {
   position: absolute;
-  bottom: 15px;
+  bottom: clamp(8px, 2vw, 15px);
   left: 50%;
   transform: translateX(-50%);
   z-index: 15;
 }
 
 .play-again-btn {
-  padding: 10px 24px;
-  font-size: 18px;
+  padding: clamp(2px, 1.5vw, 10px) clamp(8px, 3vw, 24px);
+  font-size: clamp(8px, 2.5vw, 18px);
   font-weight: bold;
   border: 2px solid black;
-  border-radius: 8px;
+  border-radius: clamp(5px, 1vw, 8px);
   background-color: #ffcc00;
   cursor: pointer;
 }
