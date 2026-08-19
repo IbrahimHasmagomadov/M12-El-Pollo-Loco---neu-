@@ -17,8 +17,10 @@ class World {
   bottleCounterImage = new Image();
   coinCounterImage = new Image();
   winScreenImage = new Image();
-  debugZoom = 1; //tetweise
+  loseScreenImage = new Image();
+  debugZoom = 1;
   gameWon = false;
+  gameLost = false;
   muted = false;
   running = true;
   intervalIds = [];
@@ -37,6 +39,7 @@ class World {
     this.bottleCounterImage.src = "img/6_salsa_bottle/salsa_bottle.png";
     this.coinCounterImage.src = "img/8_coin/coin_1.png";
     this.winScreenImage.src = "img/You won, you lost/You won A.png";
+    this.loseScreenImage.src = "img/You won, you lost/Game Over.png";
     this.draw();
     this.setWorld();
     this.checkCollisions();
@@ -67,6 +70,7 @@ class World {
       this.checkCactusCollision();
       this.checkEndbossCactusCollision();
       this.checkGameWon();
+      this.checkGameLost();
       this.checkStoneTopCollision();
       this.resetGroundYIfNotOnStone();
     }, 1000 / 30);
@@ -200,7 +204,6 @@ class World {
         endboss.hit(20);
         playSound("stompedChicken");
         endboss.hasHitCactus = true;
-        // Start return phase: boss goes back to the right instead of chasing the character
         endboss.isReturningAfterCactus = true;
         this.endbossStatusbar.setPercentage(endboss.energy);
       }
@@ -221,6 +224,13 @@ class World {
         showPlayAgainButton();
       }
       this.gameWon = true;
+    }
+  }
+
+  checkGameLost() {
+    if (this.character.deadAnimationPlayed && !this.gameLost) {
+      this.gameLost = true;
+      showPlayAgainButton();
     }
   }
 
@@ -378,11 +388,6 @@ class World {
     }, 1000);
   }
 
-  /**
-   * Vergibt Punkte für ein besiegtes Chicken. Kleine Chicken geben
-   * mehr Punkte als normale, weil sie schwerer zu treffen sind.
-   * @param {Chicken|SmallChicken} chicken
-   */
   addChickenPoints(chicken) {
     if (chicken instanceof SmallChicken) {
       this.score += this.pointsPerSmallChicken;
@@ -489,6 +494,9 @@ class World {
     if (this.gameWon) {
       this.drawWinScreen();
     }
+    if (this.gameLost) {
+      this.drawLoseScreen();
+    }
 
     let self = this;
     this.animationFrameId = requestAnimationFrame(function () {
@@ -509,13 +517,11 @@ class World {
   }
 
   drawWinScreen() {
-    // Dunkler Overlay über dem ganzen Spiel, damit der Winscreen besser lesbar ist.
     this.ctx.save();
     this.ctx.fillStyle = "rgba(0, 0, 0, 0.55)";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.restore();
 
-    // Das Winscreen-Bild selbst nur noch in einer kleineren Box in der Mitte zeigen.
     const boxWidth = 500;
     const boxHeight = 260;
     const boxX = (this.canvas.width - boxWidth) / 2;
@@ -523,14 +529,26 @@ class World {
 
     this.ctx.drawImage(this.winScreenImage, boxX, boxY, boxWidth, boxHeight);
 
-    this.drawWinScreenScore(boxX, boxY, boxWidth, boxHeight);
+    this.drawEndScreenScore(boxX, boxY, boxWidth, boxHeight);
   }
 
-  /**
-   * Zeigt den aktuellen Punktestand und den gespeicherten Highscore
-   * unterhalb des Winscreen-Bildes an. "highscore" kommt aus game.js.
-   */
-  drawWinScreenScore(boxX, boxY, boxWidth, boxHeight) {
+  drawLoseScreen() {
+    this.ctx.save();
+    this.ctx.fillStyle = "rgba(0, 0, 0, 0.55)";
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.restore();
+
+    const boxWidth = 500;
+    const boxHeight = 260;
+    const boxX = (this.canvas.width - boxWidth) / 2;
+    const boxY = (this.canvas.height - boxHeight) / 2;
+
+    this.ctx.drawImage(this.loseScreenImage, boxX, boxY, boxWidth, boxHeight);
+
+    this.drawEndScreenScore(boxX, boxY, boxWidth, boxHeight);
+  }
+
+  drawEndScreenScore(boxX, boxY, boxWidth, boxHeight) {
     this.ctx.save();
     this.ctx.font = "bold 22px Comic Sans MS";
     this.ctx.fillStyle = "white";
@@ -538,7 +556,11 @@ class World {
 
     const centerX = boxX + boxWidth / 2;
     this.ctx.fillText("Punkte: " + this.score, centerX, boxY + boxHeight + 0);
-    this.ctx.fillText("Highscore: " + highscore, centerX, boxY + boxHeight + 32);
+    this.ctx.fillText(
+      "Highscore: " + highscore,
+      centerX,
+      boxY + boxHeight + 32,
+    );
 
     this.ctx.restore();
   }

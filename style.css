@@ -9,7 +9,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Hintergrundbild liegt fest über dem ganzen Bildschirm */
 body::before {
   content: "";
   position: fixed;

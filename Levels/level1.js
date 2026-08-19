@@ -48,12 +48,36 @@ function createCoins(amount) {
   return coins;
 }
 
+function createTargetedCoins() {
+  let coins = [];
+
+  coins.push(new Coin(890, 240));
+  coins.push(new Coin(950, 150));
+  coins.push(new Coin(1000, 150));
+  coins.push(new Coin(1060, 240));
+
+  coins.push(new Coin(1660, 240));
+  coins.push(new Coin(1710, 150));
+  coins.push(new Coin(1770, 150));
+  coins.push(new Coin(1840, 240));
+
+  coins.push(new Coin(3180, 120));
+  coins.push(new Coin(3260, 120));
+
+  coins.push(new Coin(4430, 260));
+  coins.push(new Coin(4430, 200));
+  coins.push(new Coin(4430, 140));
+  coins.push(new Coin(4430, 80));
+
+  return coins;
+}
+
 let level1;
 
 function initLevel() {
   level1 = new Level(
     [...createChickens(10), ...createSmallChickens(5), new Endboss()],
-    [...createBottles(20), ...createCoins(100)],
+    [...createBottles(20), ...createCoins(100), ...createTargetedCoins()],
 
     [
       new Stone(3050),
