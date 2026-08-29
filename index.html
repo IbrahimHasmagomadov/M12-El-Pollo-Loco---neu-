@@ -35,6 +35,10 @@
   </head>
 
   <body>
+    <div class="rotate-device">
+      <img src="img/responsive/rotate-device.png" alt="Rotate device" />
+      <p>Rotate your device to play</p>
+    </div>
     <h1>El Pollo Loco</h1>
     <div id="startScreen" class="start-screen">
       <img
@@ -50,7 +54,6 @@
 
         <button onclick="showGameInfo()">Info</button>
       </div>
-      
 
       <div id="gameInfo" class="game-info d-none">
         <h2>HOW TO PLAY</h2>
@@ -111,7 +114,7 @@
           class="back-to-menu-btn"
           onclick="backToMenu()"
         >
-         Menu
+          Menu
         </button>
 
         <button
@@ -128,13 +131,40 @@
         </button>
       </div>
 
+      <div id="touchControls" class="touch-controls d-none">
+        <div class="touch-controls-left">
+          <button class="touch-btn" id="touchThrow" aria-label="Throw bottle">
+            <img src="img/icons/keys/throw-touch.png" alt="" />
+          </button>
+
+          <button class="touch-btn" id="touchJump" aria-label="Jump">
+            <img src="img/icons/keys/up-touch.svg" alt="" />
+          </button>
+        </div>
+
+        <div class="touch-controls-right">
+          <button class="touch-btn" id="touchLeft" aria-label="Move left">
+            <img src="img/icons/keys/left-touch.svg" alt="" />
+          </button>
+
+          <button class="touch-btn" id="touchRight" aria-label="Move right">
+            <img src="img/icons/keys/right-touch.svg" alt="" />
+          </button>
+        </div>
+      </div>
+
+      <div id="winScreenActions" class="win-screen-actions d-none">
+        <button class="play-again-btn" onclick="playAgain()">
+          Nochmal spielen
+        </button>
+      </div>
+
       <div id="winScreenActions" class="win-screen-actions d-none">
         <button class="play-again-btn" onclick="playAgain()">
           Nochmal spielen
         </button>
       </div>
     </div>
-    
 
     <script>
       init();

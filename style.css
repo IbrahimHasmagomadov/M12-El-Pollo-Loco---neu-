@@ -9,6 +9,7 @@ body {
   overflow-x: hidden;
 }
 
+/* Hintergrundbild über den ganzen Bildschirm */
 body::before {
   content: "";
   position: fixed;
@@ -20,18 +21,29 @@ body::before {
   z-index: -1;
 }
 
+
+/* -------------------- */
+/* CANVAS */
+/* -------------------- */
+
 canvas {
   background-color: rgb(62, 62, 62);
   display: block;
   width: 100%;
   height: auto;
+  border-radius: clamp(4px, 1cqw, 10px);
+  box-shadow: 0 0 clamp(8px, 2cqw, 16px) 1px rgba(0, 0, 0, 0.75);
 }
 
 .canvas-wrapper {
   position: relative;
-  width: 720px;
-  max-width: 100%;
+  width: min(720px, calc(100vw - 20px), calc((100dvh - 16px) * 1.5));
+  container-type: inline-size;
 }
+
+/* -------------------- */
+/* GAME CONTROLS */
+/* -------------------- */
 
 .game-controls {
   position: absolute;
@@ -46,8 +58,8 @@ canvas {
 }
 
 .back-to-menu-btn {
-  padding: clamp(1px, 1.2vw, 8px) clamp(5px, 2.5vw, 18px);
-  font-size: clamp(8px, 2.2vw, 16px);
+  padding: clamp(5px, 1.2vw, 8px) clamp(10px, 2.5vw, 18px);
+  font-size: clamp(11px, 2.2vw, 16px);
   font-weight: bold;
   border: 2px solid black;
   border-radius: clamp(5px, 1vw, 8px);
@@ -59,6 +71,9 @@ canvas {
   background-color: #ffb300;
 }
 
+
+/* Sound Icon */
+
 .icon-btn {
   background: none;
   border: none;
@@ -69,10 +84,6 @@ canvas {
   justify-content: center;
 }
 
-.icon-btn:hover img {
-  filter: drop-shadow(10px 0 8px orange);
-}
-
 .icon-btn img {
   width: clamp(18px, 4vw, 28px);
   height: clamp(18px, 4vw, 28px);
@@ -80,12 +91,70 @@ canvas {
   pointer-events: none;
 }
 
+.icon-btn:hover img {
+  filter: drop-shadow(0 0 6px orange);
+}
+
+
+/* -------------------- */
+/* WIN / LOSE SCREEN */
+/* -------------------- */
+
+.win-screen-actions {
+  position: absolute;
+  bottom: clamp(6px, 2cqw, 15px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 15;
+}
+
+.play-again-btn {
+  padding: clamp(4px, 1.2cqw, 10px) clamp(10px, 2.5cqw, 24px);
+  font-size: clamp(11px, 2.2cqw, 18px);
+  font-weight: bold;
+  border: 2px solid black;
+  border-radius: clamp(5px, 1cqw, 8px);
+  background-color: #ffcc00;
+  cursor: pointer;
+}
+
+.play-again-btn:hover {
+  background-color: #ffb300;
+}
+
+
+/* -------------------- */
+/* STARTSCREEN */
+/* -------------------- */
+
+.start-screen {
+  position: relative;
+  width: 720px;
+  max-width: 100%;
+  aspect-ratio: 3 / 2;
+  container-type: inline-size;
+  border-radius: clamp(4px, 1cqw, 10px);
+  box-shadow: 0 0 clamp(8px, 2cqw, 16px) 1px rgba(0, 0, 0, 0.75);
+  overflow: hidden;
+}
+
+.start-screen-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+
+/* Highscore */
+
 .highscore-display {
   position: absolute;
   top: 3%;
   left: 50%;
   transform: translateX(-50%);
   font-size: clamp(14px, 3vw, 22px);
+  font-weight: bold;
   font-family: fantasy;
   color: white;
   text-shadow: 2px 2px 0 black;
@@ -95,44 +164,8 @@ canvas {
   z-index: 5;
 }
 
-.win-screen-actions {
-  position: absolute;
-  bottom: clamp(8px, 2vw, 15px);
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 15;
-}
 
-.play-again-btn {
-  padding: clamp(2px, 1.5vw, 10px) clamp(8px, 3vw, 24px);
-  font-size: clamp(8px, 2.5vw, 18px);
-  font-weight: bold;
-  border: 2px solid black;
-  border-radius: clamp(5px, 1vw, 8px);
-  background-color: #ffcc00;
-  cursor: pointer;
-}
-
-.play-again-btn:hover {
-  background-color: #ffb300;
-}
-
-.d-none {
-  display: none;
-}
-
-.start-screen {
-  position: relative;
-  width: 720px;
-  max-width: 100%;
-  aspect-ratio: 3 / 2;
-}
-
-.start-screen-img {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
+/* Start / Info Buttons */
 
 .start-screen-buttons {
   position: absolute;
@@ -141,15 +174,15 @@ canvas {
   bottom: 7%;
   display: flex;
   justify-content: center;
-  gap: clamp(10px, 3vw, 24px);
+  gap: 3.33cqw;
 }
 
 .start-screen-buttons button {
-  padding: clamp(7px, 1.5vw, 12px) clamp(14px, 4vw, 28px);
-  font-size: clamp(14px, 3vw, 22px);
+  padding: 1.67cqw 3.89cqw;
+  font-size: 3.06cqw;
   font-weight: bold;
-  border: 2px solid black;
-  border-radius: 10px;
+  border: 0.28cqw solid black;
+  border-radius: 1.39cqw;
   background-color: #ffcc00;
   cursor: pointer;
 }
@@ -157,6 +190,11 @@ canvas {
 .start-screen-buttons button:hover {
   background-color: #ffb300;
 }
+
+
+/* -------------------- */
+/* GAME INFO */
+/* -------------------- */
 
 .game-info {
   position: absolute;
@@ -172,21 +210,20 @@ canvas {
 }
 
 .game-info h2 {
-  margin-top: clamp(10px, 3vw, 20px);
-  margin-bottom: clamp(12px, 3vw, 25px);
-  font-size: clamp(14px, 6vw, 44px);
+  margin-top: clamp(6px, 2.5cqw, 20px);
+  margin-bottom: clamp(8px, 3cqw, 25px);
+  font-size: clamp(18px, 6cqw, 44px);
   font-family: fantasy;
-  font-weight:lighter;
-  letter-spacing: clamp(1px, 0.5vw, 3px);
+  letter-spacing: clamp(1px, 0.5cqw, 3px);
   color: black;
   text-shadow: 2px 2px 0 white;
 }
 
 .game-info-box {
-  width: min(400px, 80%);
+  width: min(400px, 85%);
   box-sizing: border-box;
   margin: 0 auto;
-  padding: clamp(10px, 2vw, 16px) clamp(16px, 4vw, 36px);
+  padding: clamp(6px, 2cqw, 16px) clamp(10px, 4cqw, 36px);
   background-color: rgba(255, 255, 255, 0.7);
   border-radius: 18px;
 }
@@ -195,8 +232,9 @@ canvas {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 0;
-  font-size: clamp(16px, 4vw, 28px);
+  gap: clamp(6px, 3cqw, 24px);
+  margin: 0 0 clamp(4px, 2cqw, 16px) 0;
+  font-size: clamp(13px, 4.2cqw, 26px);
   font-family: fantasy;
   font-weight: bold;
   color: black;
@@ -207,13 +245,13 @@ canvas {
 }
 
 .key-icon {
-  width: clamp(30px, 7vw, 48px);
-  height: clamp(30px, 7vw, 48px);
+  width: clamp(22px, 7cqw, 44px);
+  height: clamp(22px, 7cqw, 44px);
   object-fit: contain;
 }
 
 .space-key-icon {
-  width: clamp(60px, 14vw, 95px);
+  width: clamp(44px, 14cqw, 85px);
   height: auto;
   object-fit: contain;
 }
@@ -221,23 +259,25 @@ canvas {
 .key-group {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: clamp(4px, 1.5cqw, 10px);
 }
 
 .or-text {
-  font-size: clamp(12px, 2.5vw, 18px);
+  font-size: clamp(10px, 2.5cqw, 16px);
   font-family: Arial, sans-serif;
   font-weight: bold;
 }
 
+
+/* Back Button */
+
 .info-close-btn {
   position: absolute;
-  bottom: clamp(10px, 3vw, 22px);
+  bottom: clamp(6px, 3cqw, 22px);
   left: 50%;
   transform: translateX(-50%);
-
-  padding: clamp(7px, 1.5vw, 10px) clamp(18px, 4vw, 32px);
-  font-size: clamp(14px, 3vw, 22px);
+  padding: clamp(5px, 1.5cqw, 10px) clamp(12px, 4cqw, 32px);
+  font-size: clamp(11px, 3.2cqw, 20px);
   font-weight: bold;
   cursor: pointer;
   border: 3px solid black;
@@ -248,4 +288,155 @@ canvas {
 
 .info-close-btn:hover {
   background-color: #ffb300;
+}
+
+
+/* -------------------- */
+/* ROTATE DEVICE */
+/* -------------------- */
+
+.rotate-device {
+  display: none;
+}
+
+/* -------------------- */
+/* TOUCH CONTROLS */
+/* -------------------- */
+
+.touch-controls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2.5cqw;
+  padding: 0 3cqw;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+
+  z-index: 20;
+  pointer-events: none;
+}
+
+.touch-controls-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2cqw;
+}
+
+.touch-controls-right {
+  display: flex;
+  align-items: center;
+  gap: 2cqw;
+}
+
+.touch-btn {
+  width: 8.5cqw;
+  height: 8.5cqw;
+
+  padding: 0;
+  border: none;
+  background: transparent;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+  pointer-events: auto;
+
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+}
+
+.touch-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+
+  filter: drop-shadow(0 0 0px white)
+          drop-shadow(0 0 6px white);
+
+  transition:
+    transform 40ms ease,
+    filter 20ms ease;
+
+  pointer-events: none;
+}
+
+.touch-btn:active img,
+.touch-btn.active img {
+  transform: scale(0.88);
+
+  filter:
+    drop-shadow(0 0 4px orange)
+    drop-shadow(0 0 9px orange);
+}
+
+/* Handy / Tablet im Hochformat */
+
+
+
+@media only screen and (max-width: 1024px) and (orientation: portrait) {
+  body {
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  h1,
+  .start-screen,
+  .canvas-wrapper {
+    display: none;
+  }
+
+  .rotate-device {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.92);
+  }
+
+  .rotate-device img {
+    width: clamp(120px, 45vw, 250px);
+    height: auto;
+    object-fit: contain;
+  }
+
+  .rotate-device p {
+    margin: 20px 20px 0;
+    font-size: clamp(20px, 6vw, 32px);
+    font-family: fantasy;
+    font-weight: bold;
+    color: black;
+  }
+}
+
+@media only screen and (max-width: 1024px) and (orientation: landscape) {
+  body {
+    justify-content: flex-start;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  h1 {
+    display: none;
+  }
+
+  .start-screen{
+    width: min(720px, calc(100vw - 20px), calc((100dvh - 16px) * 1.5));
+  }
+}
+
+.d-none {
+  display: none;
 }

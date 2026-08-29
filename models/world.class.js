@@ -556,7 +556,7 @@ class World {
     this.ctx.textAlign = "center";
 
     const centerX = boxX + boxWidth / 2;
-    this.ctx.fillText("SCORE: " + this.score, centerX, boxY + boxHeight + 0);
+    this.ctx.fillText("Score: " + this.score, centerX, boxY + boxHeight + 0);
     this.ctx.fillText(
       "Highscore: " + highscore,
       centerX,
@@ -582,7 +582,7 @@ class World {
   drawScore() {
     this.ctx.font = "bold 22px Comic Sans MS";
     this.ctx.fillStyle = "white";
-    this.ctx.fillText("SCORE: " + this.score, 30, 145);
+    this.ctx.fillText("Score: " + this.score, 30, 145);
   }
 
   addObjectsToMap(objects) {

@@ -10,6 +10,7 @@ function init() {
   createSounds();
   updateSoundIcon();
   loadHighscore();
+  initTouchControls();
 }
 
 function createSounds() {
@@ -124,6 +125,7 @@ function startGame() {
   document.getElementById("startScreen").classList.add("d-none");
   canvas.classList.remove("d-none");
   document.getElementById("gameControls").classList.remove("d-none");
+  document.getElementById("touchControls").classList.remove("d-none");
   updateSoundIcon();
 
   initLevel();
@@ -169,6 +171,38 @@ function updateSoundIcon() {
   }
 }
 
+function initTouchControls() {
+  bindTouchButton("touchLeft", "LEFT");
+  bindTouchButton("touchRight", "RIGHT");
+  bindTouchButton("touchJump", "UP");
+  bindTouchButton("touchThrow", "D");
+}
+
+function bindTouchButton(buttonId, key) {
+  const button = document.getElementById(buttonId);
+
+  button.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
+
+    keyboard[key] = true;
+    button.classList.add("active");
+
+    button.setPointerCapture(event.pointerId);
+  });
+
+  function releaseButton(event) {
+    keyboard[key] = false;
+    button.classList.remove("active");
+
+    if (button.hasPointerCapture(event.pointerId)) {
+      button.releasePointerCapture(event.pointerId);
+    }
+  }
+
+  button.addEventListener("pointerup", releaseButton);
+  button.addEventListener("pointercancel", releaseButton);
+}
+
 function backToMenu() {
   playSound("click");
   stopBackgroundMusic();
@@ -183,6 +217,7 @@ function backToMenu() {
   canvas.classList.add("d-none");
   document.getElementById("gameControls").classList.add("d-none");
   document.getElementById("startScreen").classList.remove("d-none");
+  document.getElementById("touchControls").classList.add("d-none");
   updateHighscoreDisplay();
 }
 
